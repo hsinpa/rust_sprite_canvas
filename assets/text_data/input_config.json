@@ -1,0 +1,13 @@
+{
+  "devices" : [
+    {
+      "types" : 0,
+      "actions" : [{
+        "front" : ["w", "arrow_up"],
+        "backward" : ["s", "arrow_back"],
+        "left" : ["a", "arrow_left"],
+        "right" : ["d", "arrow_right"]
+      }]
+    }
+  ]
+}
