@@ -2,11 +2,12 @@ use bevy::app::{App, Plugin};
 use bevy::prelude::{AssetServer, Commands, Handle, Image, Res, Transform, Camera2dBundle};
 use bevy::sprite::{Sprite, SpriteBundle};
 use crate::utility::utility_func::{read_directory};
-
+use crate::game::ui;
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
+        app.add_plugin(ui::game_view::GameView);
         app.add_startup_system(setup);
         app.add_startup_system(load_preview);
     }

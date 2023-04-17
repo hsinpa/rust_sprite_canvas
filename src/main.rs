@@ -10,7 +10,6 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
 
-        .add_state::<types::AppState::Menu>()
         .add_plugin(game::game_setup::GamePlugin)
 
         // .insert_resource(utility::types::InputStruct::default())
