@@ -1,5 +1,5 @@
 import WebglResource from "../utility/WebglResource";
-import { load_unity_sprite_struct } from "./utility/map_loader";
+import { load_textfile } from "./utility/map_loader";
 import { Config } from "./utility/pinball_static";
 import { SpriteSyntaxStruct } from "./utility/unity_sprite_struct";
 import { Spritesheet, BaseTexture, Texture, Resource, utils } from 'pixi.js';
@@ -22,7 +22,7 @@ export class SpriteAssetManager {
     }
 
     async prepare_spritesheet(spritesheet_path: string) {
-        let sprite_layout = await load_unity_sprite_struct(spritesheet_path);
+        let sprite_layout = await load_textfile(spritesheet_path);
         let pinball_sprite_struct : SpriteSyntaxStruct = JSON.parse(sprite_layout);
         let pinball_spritesheet_data = this.parse_spritelayout_spritsheet(pinball_sprite_struct);
 

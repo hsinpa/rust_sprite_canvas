@@ -1,4 +1,4 @@
-export function load_unity_sprite_struct(file_path: string) : Promise<string>{
+export function load_textfile(file_path: string) : Promise<string>{
     let VertPros = fetch(file_path, {method: 'GET', credentials: 'include'});
 
     return VertPros.then(r => {
@@ -7,3 +7,5 @@ export function load_unity_sprite_struct(file_path: string) : Promise<string>{
         return t;
     })
 }
+
+

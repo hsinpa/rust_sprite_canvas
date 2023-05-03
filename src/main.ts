@@ -1,7 +1,5 @@
 import { PinballManager } from './pinball/PinballManager';
-import { load_unity_sprite_struct } from './pinball/utility/map_loader';
 import './stylesheet/style.scss';
-import { Application } from 'pixi.js';
 
 
 window.addEventListener("load", function(event) {
