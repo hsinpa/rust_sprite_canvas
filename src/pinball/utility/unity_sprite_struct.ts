@@ -26,6 +26,10 @@ export interface SceneLayoutStruct {
     name: string,
     frame_height: number,
     frame_width: number,
+
+    screen_height: number,
+    screen_width: number,
+
     spriteLayoutStructs : SpriteLayoutStruct[]
 }
 

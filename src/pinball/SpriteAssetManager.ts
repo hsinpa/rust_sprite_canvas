@@ -1,7 +1,8 @@
 import WebglResource from "../utility/WebglResource";
 import { load_textfile } from "./utility/map_loader";
 import { Config } from "./utility/pinball_static";
-import { SpriteSyntaxStruct } from "./utility/unity_sprite_struct";
+import { SpriteStruct, SpriteSyntaxStruct } from "./utility/unity_sprite_struct";
+import {Dictionary} from 'typescript-collections';
 import { Spritesheet, BaseTexture, Texture, Resource, utils } from 'pixi.js';
 
 export class SpriteAssetManager {
@@ -9,6 +10,7 @@ export class SpriteAssetManager {
     private _webResource : WebglResource;
     private _pinballSpritesheet: Spritesheet;
     private _pinballDict: utils.Dict<Texture<Resource>>;
+    private _spriteStructDict : Dictionary<string, SpriteStruct> = new Dictionary<string, SpriteStruct>();
 
     constructor() {
         this._webResource = new WebglResource();
@@ -17,6 +19,13 @@ export class SpriteAssetManager {
     get_texture(key: string) {
         if (key in this._pinballDict) {
             return this._pinballDict[key];
+        }
+        return null;
+    }
+
+    get_sprite_struct(key: string) {
+        if (this._spriteStructDict.containsKey(key)) {
+            return this._spriteStructDict.getValue(key);
         }
         return null;
     }
@@ -53,6 +62,8 @@ export class SpriteAssetManager {
                 "anchor" : {"x":anchor_x,"y":anchor_y},
                 "sourceSize": {"w":spriteStruct.width,"h":spriteStruct.height},
             };
+
+            this._spriteStructDict.setValue(spriteStruct.name, spriteStruct);
         }
 
 
