@@ -4,3 +4,5 @@ export const Config = Object.freeze({
 
     pinball_map_layout: "./config/SampleScene.json",
 });
+
+export const GRAVITY = -10;

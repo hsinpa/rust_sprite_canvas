@@ -69,8 +69,8 @@ export default class MapLayoutManager {
             
             //Scale
             this.convert_scale(spriteLayout.scale_x * spriteLayout.flip_x, sprite_layout.frame_width, this._width);
-            sprite.transform.scale.set( spriteLayout.flip_x, 
-                                        spriteLayout.flip_y);
+            sprite.transform.scale.set( spriteLayout.scale_x * spriteLayout.flip_x, 
+                                        spriteLayout.scale_y * spriteLayout.flip_y);
 
             container.addChild(sprite);
         }
