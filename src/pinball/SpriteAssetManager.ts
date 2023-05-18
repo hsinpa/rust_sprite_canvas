@@ -39,13 +39,11 @@ export class SpriteAssetManager {
         const dict = await sheet.parse();
         this._pinballSpritesheet = sheet;
         this._pinballDict = dict;
-        console.log(sheet);
     }
 
     private parse_spritelayout_spritsheet(sprite_syntax: SpriteSyntaxStruct) {
         if (sprite_syntax.sprites == null) return null;
         let sprite_lens = sprite_syntax.sprites.length;
-        console.log(sprite_syntax);
         let pixi_sprite_format : any = { "frames" : {  },
             "meta": {
                 "scale": "1",
@@ -67,7 +65,7 @@ export class SpriteAssetManager {
         }
 
 
-        console.log(pixi_sprite_format);
+        //console.log(pixi_sprite_format);
         return pixi_sprite_format;
     }
 

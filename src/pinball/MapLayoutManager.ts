@@ -10,6 +10,8 @@ export default class MapLayoutManager {
     private _width: number;
     private _height: number;
 
+    public get width() { return this._width};
+    public get height() { return this._height};
 
     constructor(sprite_assets: SpriteAssetManager) {
         this._sprite_assets = sprite_assets;
@@ -40,9 +42,7 @@ export default class MapLayoutManager {
     }
 
     private convert_scale(value: number, unity_x: number, world_x: number) {
-        let diff =(world_x - unity_x)
-        
-        console.log(diff);
+        let diff =(world_x - unity_x)  
     }
 
     render_map(sprite_layout: SceneLayoutStruct, container: Container<DisplayObject>) {
@@ -56,7 +56,6 @@ export default class MapLayoutManager {
             let spriteStruct = this._sprite_assets.get_sprite_struct(spriteLayout.sprite_name);
 
             let sprite = Sprite.from(texture);
-            console.log(spriteLayout);
 
             //Position
             let point = this.convert_position(spriteLayout.x, spriteLayout.y);
