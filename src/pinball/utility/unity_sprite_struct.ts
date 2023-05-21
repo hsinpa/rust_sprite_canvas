@@ -45,4 +45,7 @@ export interface SpriteLayoutStruct {
 
     flip_x: number,
     flip_y: number,
+
+    tag: number,
+    properties: string,
 }

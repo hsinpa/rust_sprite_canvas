@@ -28,8 +28,6 @@ class PinballThread {
 
         const data : WorldConstructStruct = msg.data;
         this._physicsEngine.set_constraint(data);
-
-        console.log(data);
     }
 
     on_simulate(msg: MessageEvent<any>) {

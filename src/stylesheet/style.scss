@@ -2,3 +2,17 @@ body {
     padding: 0;
     margin: 0;
 }
+
+#pixi_dom {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+
+    canvas {
+        width: 100%;
+        max-width: 30em;
+    }
+}
