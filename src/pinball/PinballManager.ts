@@ -50,7 +50,6 @@ export class PinballManager {
             velocity:  {x: 0, y: 0},
             acceleration:  {x: 0, y: 0},
             rotation: 0,
-            type: DynamicsType.Sphere,
             radius: 20
         };
         this._objects.push(this.demo_sphere);
@@ -107,7 +106,7 @@ export class PinballManager {
             this._physics_worker.postMessage({id: ThreadEventKey.Simulate, delta_time: this.DeltaTime});    
         }
 
-        this._dynamicsRenderer.draw(this._objects);
+        //this._dynamicsRenderer.draw(this._objects);
 
         window.requestAnimationFrame(this.update_loop.bind(this));
     }

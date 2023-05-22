@@ -9,8 +9,6 @@ export interface DynamicPhysicsObject {
 
     rotation: number,
     angular: number,
-
-    type: DynamicsType,
 }
 
 export interface SphereObject extends DynamicPhysicsObject{

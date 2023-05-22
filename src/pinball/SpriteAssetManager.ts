@@ -35,6 +35,8 @@ export class SpriteAssetManager {
         let pinball_sprite_struct : SpriteSyntaxStruct = JSON.parse(sprite_layout);
         let pinball_spritesheet_data = this.parse_spritelayout_spritsheet(pinball_sprite_struct);
 
+        console.log(pinball_spritesheet_data);
+
         const sheet = new Spritesheet(BaseTexture.from(Config.pinball_texture), pinball_spritesheet_data);
         const dict = await sheet.parse();
         this._pinballSpritesheet = sheet;

@@ -1,3 +1,5 @@
+import { IntVector2 } from "../../utility/UniversalType";
+
 export interface  SpriteSyntaxStruct {
     name: string,
     sprites: SpriteStruct[],
@@ -34,6 +36,7 @@ export interface SceneLayoutStruct {
 }
 
 export interface SpriteLayoutStruct {
+    id: number,
     texture_name: string,
     sprite_name: string,
 
@@ -48,4 +51,38 @@ export interface SpriteLayoutStruct {
 
     tag: number,
     properties: string,
+}
+
+export enum CollisionType { Line = 0, Rect, Oval, Sphere }
+
+export interface ColliderStruct {
+    collisionType: CollisionType,
+    data: string,
+}
+
+export interface LineCollision {
+    point_a: IntVector2;
+    point_b: IntVector2;
+}
+
+export interface RectCollision
+{
+    x: number;
+    y: number;
+
+    height: number;
+    width: number;
+}
+
+export interface OvalCollision
+{
+    sphere_a : SphereCollision;
+    sphere_b : SphereCollision;
+}
+
+export interface SphereCollision
+{
+    x: number;
+    y: number;
+    radius: number;
 }
