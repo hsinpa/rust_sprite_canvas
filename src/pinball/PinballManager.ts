@@ -69,16 +69,17 @@ export class PinballManager {
 
         this._mapLayoutManager.set_browser_stat(sceneLayout.screen_width, sceneLayout.screen_height);
 
-        this._physics_worker.postMessage({id: ThreadEventKey.WorldConstruct, world_width: sceneLayout.screen_width, world_heigth: sceneLayout.screen_height });
-        this._physics_worker.postMessage({id: ThreadEventKey.ObjectPush, 
-                                                spheres: [this.demo_sphere] });
-
         this._pixi_app = new Application({ width: sceneLayout.screen_width, height: sceneLayout.screen_height, background: '#c2bebf' });
         this._pixi_dom.appendChild<any>(this._pixi_app.view);
 
         this._pixi_app.stage.addChild(this._dynamicsRenderer.get_primitive_grapics);
 
         this._mapLayoutManager.render_map(sceneLayout, this._pixi_app.stage);
+
+        this._physics_worker.postMessage({id: ThreadEventKey.WorldConstruct, scene_layout: sceneLayout });
+        this._physics_worker.postMessage({id: ThreadEventKey.ObjectPush, 
+                                                spheres: [this.demo_sphere] });
+
 
         this._woker_ready_flag = true;
     }
@@ -100,13 +101,13 @@ export class PinballManager {
 
             this.DeltaTime = (timestamp - this._previous_timestamp) * 0.001;
             this.DeltaTime = Clamp(this.DeltaTime, 0.001, 0.02);
-            this.on_keyboard_input();
+            //this.on_keyboard_input();
 
             this._previous_timestamp = timestamp;
             this._physics_worker.postMessage({id: ThreadEventKey.Simulate, delta_time: this.DeltaTime});    
         }
 
-        //this._dynamicsRenderer.draw(this._objects);
+        this._dynamicsRenderer.draw(this._objects);
 
         window.requestAnimationFrame(this.update_loop.bind(this));
     }

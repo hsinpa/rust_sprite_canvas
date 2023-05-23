@@ -2,16 +2,17 @@ import { Config } from "../utility/pinball_static";
 import { DynamicPhysicsObject, SphereObject } from "../utility/pinball_types";
 import { WorldConstructStruct } from "./pinball_thread_event";
 import { VectorNumScale, VectorAdd } from "../../utility/UtilityMethod";
+import { SceneLayoutStruct } from "../utility/unity_sprite_struct";
 
 
 export class PinballPhysics {
-    private _world_struct: WorldConstructStruct;
+    private _world_struct: SceneLayoutStruct;
     private _sphere_objects: SphereObject[] = [];
 
     public get simulated_object() { return this._sphere_objects; } 
 
-    set_constraint(world_struct: WorldConstructStruct) {
-        this._world_struct = world_struct;
+    set_constraint(data : SceneLayoutStruct) {
+        this._world_struct = data;
     }
 
     push(sphere_object : SphereObject) {
@@ -27,8 +28,8 @@ export class PinballPhysics {
         }
 
         //Right
-        if (sphere_object.position.x > this._world_struct.world_width - sphere_object.radius) {
-            sphere_object.position.x = this._world_struct.world_width - sphere_object.radius;
+        if (sphere_object.position.x > this._world_struct.screen_width - sphere_object.radius) {
+            sphere_object.position.x = this._world_struct.screen_width - sphere_object.radius;
             sphere_object.velocity.x = -sphere_object.velocity.x;
         }
 
@@ -38,8 +39,8 @@ export class PinballPhysics {
             sphere_object.velocity.y = -sphere_object.velocity.y;
         }
 
-        if (sphere_object.position.y > this._world_struct.world_heigth - sphere_object.radius) {
-            sphere_object.position.y = this._world_struct.world_heigth - sphere_object.radius;
+        if (sphere_object.position.y > this._world_struct.screen_width - sphere_object.radius) {
+            sphere_object.position.y = this._world_struct.screen_width - sphere_object.radius;
             sphere_object.velocity.y = -sphere_object.velocity.y;
         }
 

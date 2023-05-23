@@ -6,7 +6,7 @@ export const Config = Object.freeze({
 });
 
 export const PinballLayer = Object.freeze({
-    "Flipper_Rigth": 6,
+    "Flipper_Right": 6,
     "Flipper_Left": 7,
 
 });

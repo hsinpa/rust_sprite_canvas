@@ -1,4 +1,5 @@
 import {SphereObject} from '../utility/pinball_types';
+import { SceneLayoutStruct } from '../utility/unity_sprite_struct';
 
 export const ThreadEventKey = Object.freeze( {
     WorldConstruct : "thread@world_contruct",
@@ -13,8 +14,7 @@ export interface ThreadEventInterface {
 }
 
 export interface WorldConstructStruct extends ThreadEventInterface {
-    world_width: number,
-    world_heigth: number
+    scene_layout: SceneLayoutStruct
 }
 
 export interface ObjectPushStruct extends ThreadEventInterface {
