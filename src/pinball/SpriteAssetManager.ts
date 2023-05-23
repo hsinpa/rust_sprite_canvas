@@ -63,6 +63,8 @@ export class SpriteAssetManager {
                 "sourceSize": {"w":spriteStruct.width,"h":spriteStruct.height},
             };
 
+
+            console.log(spriteStruct.name);
             this._spriteStructDict.setValue(spriteStruct.name, spriteStruct);
         }
 

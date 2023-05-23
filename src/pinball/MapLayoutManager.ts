@@ -3,7 +3,8 @@ import { SpriteAssetManager } from './SpriteAssetManager';
 import {load_textfile} from './utility/map_loader';
 import {SceneLayoutStruct, SpriteLayoutStruct} from './utility/unity_sprite_struct';
 import {PinballLayer} from './utility/pinball_static';
-import {convert_position} from './utility/map_loader'
+import {convert_position} from './utility/map_loader';
+import {Dictionary} from 'typescript-collections';
 
 
 export default class MapLayoutManager {
@@ -15,6 +16,7 @@ export default class MapLayoutManager {
     private _canvas_dom: HTMLCanvasElement;
     private _aspect_ratio : number;
     private _sprite_layout: SceneLayoutStruct;
+    private _sprite_dict: Dictionary<number, Sprite> = new Dictionary();
     
     _flipper_right: Sprite;
     _flipper_left: Sprite;
@@ -25,6 +27,18 @@ export default class MapLayoutManager {
     constructor(sprite_assets: SpriteAssetManager) {
         this._sprite_assets = sprite_assets;
         window.addEventListener("resize", this.auto_resize_canvas.bind(this));
+    }
+
+    public get_sprite(id: number) {
+        return this._sprite_dict.getValue(id);
+    }
+
+    public push_sprite(id: number, sprite: Sprite) {
+        this._sprite_dict.setValue(id, sprite);
+    }
+    
+    public remove_sprite(id: number) {
+        this._sprite_dict.remove(id);
     }
 
     set_browser_stat(width: number, height: number) {
@@ -76,6 +90,7 @@ export default class MapLayoutManager {
             let texture = this._sprite_assets.get_texture(singleLayout.sprite_name);
             let spriteStruct = this._sprite_assets.get_sprite_struct(singleLayout.sprite_name);
 
+            console.log(singleLayout.sprite_name);
             let sprite = Sprite.from(texture);
 
             //Position
@@ -101,6 +116,8 @@ export default class MapLayoutManager {
 
             if (singleLayout.tag == PinballLayer.Flipper_Right)
                 this._flipper_right = sprite;
+
+            this._sprite_dict.setValue(singleLayout.id, sprite);
 
             container.addChild(sprite);
         }

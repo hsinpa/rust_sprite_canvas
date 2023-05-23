@@ -69,7 +69,7 @@ export class PinballManager {
 
         this._mapLayoutManager.set_browser_stat(sceneLayout.screen_width, sceneLayout.screen_height);
 
-        this._pixi_app = new Application({ width: sceneLayout.screen_width, height: sceneLayout.screen_height, background: '#c2bebf' });
+        this._pixi_app = new Application({ width: sceneLayout.screen_width, height: sceneLayout.screen_height, background: '#83a32c' });
         this._pixi_dom.appendChild<any>(this._pixi_app.view);
 
         this._pixi_app.stage.addChild(this._dynamicsRenderer.get_primitive_grapics);

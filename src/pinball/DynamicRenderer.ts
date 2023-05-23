@@ -17,14 +17,11 @@ export class DynamicRenderer{
         this._primitives.clear();
         const lens = dynamics.length;
 
-        // console.log(lens);
+        //console.log(lens);
         for (let i = 0; i < lens; i++) {
             let d_obj = dynamics[i];
 
-            if (d_obj.type == null || d_obj.type == undefined) continue;
-
-            if (d_obj.type ==  DynamicsType.Sphere)
-                this.draw_sphere(d_obj as SphereObject);
+            //this.draw_sphere(d_obj as SphereObject);
         }
     }
 

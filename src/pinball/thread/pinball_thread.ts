@@ -27,15 +27,13 @@ class PinballThread {
     on_world_construct_event(msg: MessageEvent<any>) {
         console.log("on_world_construct_event");
 
-        const data : SceneLayoutStruct = msg.data;
-        this._physicsEngine.set_constraint(data);
+        const data : WorldConstructStruct = msg.data;
+        this._physicsEngine.set_constraint(data.scene_layout);
     }
 
     on_simulate(msg: MessageEvent<any>) {
         const data : SimulateStruct = msg.data;
         this._physicsEngine.simulate(data.delta_time);
-
-        console.log(this._physicsEngine.simulated_object)
 
         postMessage({id: ThreadEventKey.ObjectUpdate, objects: this._physicsEngine.simulated_object});
     }

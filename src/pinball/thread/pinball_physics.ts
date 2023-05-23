@@ -2,21 +2,36 @@ import { Config } from "../utility/pinball_static";
 import { DynamicPhysicsObject, SphereObject } from "../utility/pinball_types";
 import { WorldConstructStruct } from "./pinball_thread_event";
 import { VectorNumScale, VectorAdd } from "../../utility/UtilityMethod";
-import { SceneLayoutStruct } from "../utility/unity_sprite_struct";
-
+import { CollisionType, SceneLayoutStruct, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
+import { Dictionary } from "typescript-collections";
+import { PhysicsInterface } from "../physics_component/PhysicsInterface";
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
     private _sphere_objects: SphereObject[] = [];
 
     public get simulated_object() { return this._sphere_objects; } 
+    private physics_components : Dictionary<number, PhysicsInterface> = new Dictionary();
 
     set_constraint(data : SceneLayoutStruct) {
         this._world_struct = data;
+        console.log(this._world_struct);
+
+        let s_lens = this._world_struct.spriteLayoutStructs.length;
+
+        for (let i = 0; i < s_lens; i++) 
+            this.parse_collision_data(this._world_struct.spriteLayoutStructs[i]);
     }
 
     push(sphere_object : SphereObject) {
         this._sphere_objects.push(sphere_object);
+    }
+
+    parse_collision_data(spriteLayoutStructs : SpriteLayoutStruct) {
+        if (spriteLayoutStructs.collisionStruct == null || spriteLayoutStructs.collisionStruct.data == "") return;
+
+            
+    
     }
 
     collision(sphere_object: SphereObject) {

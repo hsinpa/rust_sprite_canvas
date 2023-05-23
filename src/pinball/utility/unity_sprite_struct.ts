@@ -51,6 +51,7 @@ export interface SpriteLayoutStruct {
 
     tag: number,
     properties: string,
+    collisionStruct : ColliderStruct,
 }
 
 export enum CollisionType { Line = 0, Rect, Oval, Sphere }
