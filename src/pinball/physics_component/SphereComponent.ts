@@ -20,13 +20,15 @@ export default class SphereComponent extends PhysicsInterface {
     }
 
     render_collider(graphics: Graphics, screen_height: number): void {
-        console.log(this._transform.position.x);
 
-        let position_x = this._transform.position.x + 0;
-        let position_y = this._transform.position.y + 0;
+        console.log(this._transform.position);
+        console.log(this._sphereCollision);
+
+        let position_x = this._transform.position.x + this._sphereCollision.x;
+        let position_y = this._transform.position.y + this._sphereCollision.y;
 
         graphics.beginFill(0x8FD5FF, 0.5);
-        graphics.drawCircle(position_x, screen_height - position_y, 1 * this._base_unit);
+        graphics.drawCircle(position_x, position_y, this._sphereCollision.radius * this._base_unit);
         graphics.endFill();
     }
 }

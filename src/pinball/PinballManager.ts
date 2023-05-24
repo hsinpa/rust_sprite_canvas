@@ -70,24 +70,24 @@ export class PinballManager {
         let aspect_ratio = sceneLayout.frame_height / sceneLayout.frame_width;
         let browser_heigth = browser_width * aspect_ratio;
 
-        this._visualizer = new PhysicsVisualizeTool(sceneLayout);
-        this._visualizer.visualize();
-
         this._mapLayoutManager.set_browser_stat(sceneLayout.screen_width, sceneLayout.screen_height);
 
         this._pixi_app = new Application({ width: sceneLayout.screen_width, height: sceneLayout.screen_height, background: '#83a32c' });
         this._pixi_dom.appendChild<any>(this._pixi_app.view);
 
-        this._pixi_app.stage.addChild(this._dynamicsRenderer.get_primitive_grapics);
-        this._pixi_app.stage.addChild(this._visualizer.Primitives);
 
         this._mapLayoutManager.render_map(sceneLayout, this._pixi_app.stage);
+
+        this._visualizer = new PhysicsVisualizeTool(sceneLayout);
+        this._visualizer.visualize();
 
         this._physics_worker.postMessage({id: ThreadEventKey.WorldConstruct, scene_layout: sceneLayout });
         this._physics_worker.postMessage({id: ThreadEventKey.ObjectPush, 
                                                 spheres: [this.demo_sphere] });
 
-
+        this._pixi_app.stage.addChild(this._dynamicsRenderer.get_primitive_grapics);
+        this._pixi_app.stage.addChild(this._visualizer.Primitives);
+                                        
         this._woker_ready_flag = true;
     }
 
