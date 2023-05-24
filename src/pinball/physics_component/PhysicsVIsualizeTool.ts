@@ -1,4 +1,4 @@
-import { Graphics } from "pixi.js";
+import { Graphics, PI_2 } from "pixi.js";
 import { CollisionType, SceneLayoutStruct, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
 import LineComponent from "./LineComponent";
 import OvalComponent from "./OvalComponent";
@@ -30,10 +30,11 @@ export function parse_collision_array(layout: SceneLayoutStruct) {
 
         if (physicsInterface == null) continue;
 
-        physicsInterface.parse_collision_struct(spriteStruct.collisionStruct);
         physicsInterface.update_transform({
             id: spriteStruct.id, rotation: spriteStruct.rotation,
             position: {x: spriteStruct.x, y: spriteStruct.y }, scale: {x: spriteStruct.scale_x, y: spriteStruct.scale_y}});
+
+        physicsInterface.parse_collision_struct(spriteStruct.collisionStruct);
 
         physicsComponents.push(physicsInterface);
     }

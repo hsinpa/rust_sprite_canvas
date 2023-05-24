@@ -20,10 +20,6 @@ export default class SphereComponent extends PhysicsInterface {
     }
 
     render_collider(graphics: Graphics, screen_height: number): void {
-
-        console.log(this._transform.position);
-        console.log(this._sphereCollision);
-
         let position_x = this._transform.position.x + this._sphereCollision.x;
         let position_y = this._transform.position.y + this._sphereCollision.y;
 

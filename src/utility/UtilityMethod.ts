@@ -55,6 +55,11 @@ export function VectorAdd(a : IntVector2, b : IntVector2) {
     }
 }
 
+export function PerpendicularClockwise(vector: IntVector2) : IntVector2
+{
+    return {x: vector.y, y: -vector.x};
+}
+
 export function VectorMinus(a : IntVector2, b : IntVector2) {
     return {
         x : a.x - b.x,
