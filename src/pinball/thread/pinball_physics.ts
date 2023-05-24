@@ -1,5 +1,5 @@
 import { Config } from "../utility/pinball_static";
-import { DynamicPhysicsObject, SphereObject } from "../utility/pinball_types";
+import { PhysicsTransform } from "../utility/pinball_types";
 import { WorldConstructStruct } from "./pinball_thread_event";
 import { VectorNumScale, VectorAdd } from "../../utility/UtilityMethod";
 import { CollisionType, SceneLayoutStruct, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
@@ -8,7 +8,7 @@ import { PhysicsInterface } from "../physics_component/PhysicsInterface";
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
-    private _sphere_objects: SphereObject[] = [];
+    private _sphere_objects: PhysicsTransform[] = [];
 
     public get simulated_object() { return this._sphere_objects; } 
     private physics_components : Dictionary<number, PhysicsInterface> = new Dictionary();
@@ -23,7 +23,7 @@ export class PinballPhysics {
             this.parse_collision_data(this._world_struct.spriteLayoutStructs[i]);
     }
 
-    push(sphere_object : SphereObject) {
+    push(sphere_object : PhysicsTransform) {
         this._sphere_objects.push(sphere_object);
     }
 
@@ -34,7 +34,7 @@ export class PinballPhysics {
     
     }
 
-    collision(sphere_object: SphereObject) {
+    collision(sphere_object: PhysicsTransform) {
 
         //Left
         if (sphere_object.position.x < sphere_object.radius) {

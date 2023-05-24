@@ -1,13 +1,13 @@
 import { Config } from "../utility/pinball_static";
-import { DynamicPhysicsObject } from "../utility/pinball_types";
+import { PhysicsTransform } from "../utility/pinball_types";
 
 export class PinballPhysicsAsset {
-    private _cacheDeleteObject: DynamicPhysicsObject[] = [];
-    private _dynamicObject: DynamicPhysicsObject[] = [];
+    private _cacheDeleteObject: PhysicsTransform[] = [];
+    private _dynamicObject: PhysicsTransform[] = [];
     
     
 
-    push(dynamicObject: DynamicPhysicsObject) {
+    push(dynamicObject: PhysicsTransform) {
         this._dynamicObject.push(dynamicObject);
     }
 

@@ -90,7 +90,6 @@ export default class MapLayoutManager {
             let texture = this._sprite_assets.get_texture(singleLayout.sprite_name);
             let spriteStruct = this._sprite_assets.get_sprite_struct(singleLayout.sprite_name);
 
-            console.log(singleLayout.sprite_name);
             let sprite = Sprite.from(texture);
 
             //Position

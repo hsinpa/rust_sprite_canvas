@@ -6,10 +6,11 @@ import MapLayoutManager from "./MapLayoutManager";
 import {ThreadEventKey} from "./thread/pinball_thread_event";
 import {DynamicRenderer} from './DynamicRenderer';
 import { vec2 } from "gl-matrix";
-import { DynamicsType, SphereObject } from "./utility/pinball_types";
+import { PhysicsTransform } from "./utility/pinball_types";
 import { Clamp } from "../utility/UtilityMethod";
 import InputHandler from "../utility/Input/InputHandler";
 import { InputEventTitle} from "../utility/Input/KeycodeTable";
+import { PhysicsVisualizeTool } from "./physics_component/PhysicsVIsualizeTool";
 
 export class PinballManager {
 
@@ -21,12 +22,13 @@ export class PinballManager {
 
     private _previous_timestamp: number = 0;
     private _dynamicsRenderer: DynamicRenderer;
+    private _visualizer: PhysicsVisualizeTool;
 
     public DeltaTime : number;
 
     private _physics_worker: Worker;
     private _woker_ready_flag: boolean = false;
-    private demo_sphere: SphereObject;
+    private demo_sphere: PhysicsTransform;
     private _objects: any[] = [];
 
     constructor(query: string) {
@@ -50,6 +52,7 @@ export class PinballManager {
             velocity:  {x: 0, y: 0},
             acceleration:  {x: 0, y: 0},
             rotation: 0,
+            scale:{x: 1, y: 1},
             radius: 20
         };
         this._objects.push(this.demo_sphere);
@@ -67,12 +70,16 @@ export class PinballManager {
         let aspect_ratio = sceneLayout.frame_height / sceneLayout.frame_width;
         let browser_heigth = browser_width * aspect_ratio;
 
+        this._visualizer = new PhysicsVisualizeTool(sceneLayout);
+        this._visualizer.visualize();
+
         this._mapLayoutManager.set_browser_stat(sceneLayout.screen_width, sceneLayout.screen_height);
 
         this._pixi_app = new Application({ width: sceneLayout.screen_width, height: sceneLayout.screen_height, background: '#83a32c' });
         this._pixi_dom.appendChild<any>(this._pixi_app.view);
 
         this._pixi_app.stage.addChild(this._dynamicsRenderer.get_primitive_grapics);
+        this._pixi_app.stage.addChild(this._visualizer.Primitives);
 
         this._mapLayoutManager.render_map(sceneLayout, this._pixi_app.stage);
 
@@ -108,7 +115,6 @@ export class PinballManager {
         }
 
         this._dynamicsRenderer.draw(this._objects);
-
         window.requestAnimationFrame(this.update_loop.bind(this));
     }
 

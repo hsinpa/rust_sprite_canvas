@@ -1,5 +1,5 @@
 import MapLayoutManager from './MapLayoutManager';
-import {DynamicPhysicsObject, SphereObject, DynamicsType} from './utility/pinball_types';
+import {PhysicsTransform} from './utility/pinball_types';
 import {Graphics} from 'pixi.js';
 
 export class DynamicRenderer{
@@ -25,7 +25,7 @@ export class DynamicRenderer{
         }
     }
 
-    private draw_sphere(sphere : SphereObject) {
+    private draw_sphere(sphere : PhysicsTransform) {
         this._primitives.beginFill(0x8FD5FF, 1);
         this._primitives.drawCircle(sphere.position.x, this._mapLayout.height - sphere.position.y, sphere.radius);
         this._primitives.endFill();
