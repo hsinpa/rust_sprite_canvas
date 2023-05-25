@@ -107,7 +107,7 @@ export default class MapLayoutManager {
                                         singleLayout.scale_y * singleLayout.flip_y);
             
             //Rotation
-            sprite.anchor.set(spriteStruct.pivot_x, spriteStruct.pivot_y);
+            sprite.anchor.set(spriteStruct.pivot_x, 1-spriteStruct.pivot_y);
             sprite.rotation = -singleLayout.rotation;
 
             if (singleLayout.tag == PinballLayer.Flipper_Left)

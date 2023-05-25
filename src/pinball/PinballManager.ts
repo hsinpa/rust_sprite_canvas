@@ -10,7 +10,7 @@ import { PhysicsTransform } from "./utility/pinball_types";
 import { Clamp } from "../utility/UtilityMethod";
 import InputHandler from "../utility/Input/InputHandler";
 import { InputEventTitle} from "../utility/Input/KeycodeTable";
-import { PhysicsVisualizeTool } from "./physics_component/PhysicsVIsualizeTool";
+import { PhysicsVisualizeTool } from "./physics_component/PhysicsVisualizeTool";
 
 export class PinballManager {
 
