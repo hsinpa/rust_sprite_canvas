@@ -18,9 +18,6 @@ export default class MapLayoutManager {
     private _sprite_layout: SceneLayoutStruct;
     private _sprite_dict: Dictionary<number, Sprite> = new Dictionary();
     
-    _flipper_right: Sprite;
-    _flipper_left: Sprite;
-
     public get width() { return this._width};
     public get height() { return this._height};
 
@@ -109,12 +106,6 @@ export default class MapLayoutManager {
             //Rotation
             sprite.anchor.set(spriteStruct.pivot_x, 1-spriteStruct.pivot_y);
             sprite.rotation = -singleLayout.rotation;
-
-            if (singleLayout.tag == PinballLayer.Flipper_Left)
-                this._flipper_left = sprite;
-
-            if (singleLayout.tag == PinballLayer.Flipper_Right)
-                this._flipper_right = sprite;
 
             this._sprite_dict.setValue(singleLayout.id, sprite);
 

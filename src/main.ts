@@ -14,5 +14,4 @@ async function api_call() {
 
 window.addEventListener("load", function(event) {
     let pinball = new PinballManager("#pixi_dom");
-    //api_call();
 });

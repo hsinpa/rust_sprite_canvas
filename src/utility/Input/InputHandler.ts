@@ -1,8 +1,6 @@
 import { vec2, vec3 } from "gl-matrix";
 import { KeycodeLookupTable, InputEventTitle } from "./KeycodeTable";
 
-
-
 export const InputMovementType = Object.freeze({
     Up : vec2.fromValues(0, 1),
     Down : vec2.fromValues(0, -1),
@@ -22,7 +20,17 @@ export interface InputMouseCallback {
 export interface InputMouseClickCallback {
     (): void;
 }
-  
+
+export interface InputButtonCallback {
+    (state: ButtonState): void;
+}
+
+export enum ButtonStatus {Begin, Release}; 
+export interface ButtonState {
+    keycode: string,
+    status: ButtonStatus
+}
+
 class InputHandler {
 
     private _buttonState = Object.create({});
@@ -42,12 +50,6 @@ class InputHandler {
         return false;
     }
 
-    public RegisterButtonEvent(callback : InputMouseClickCallback) {
-        window.addEventListener('click', e => {
-            callback();
-        });  
-    }
-
     public RegisterMouseMovement(canvasDom : HTMLBodyElement, callback : InputMouseCallback) {
         canvasDom.requestPointerLock();
 
@@ -60,7 +62,7 @@ class InputHandler {
         });
     }
 
-    public RegisterKeyCodeEvent() {
+    public RegisterKeyCodeEvent(callback? : InputButtonCallback) {
         let self = this;
 
         window.addEventListener("keydown", e => {
@@ -68,6 +70,7 @@ class InputHandler {
 
             //if (lowerCaseKey in KeycodeLookupTable) 
                 this.SetKeyboardState(lowerCaseKey, true);
+                if (callback != null) callback({keycode: lowerCaseKey, status: ButtonStatus.Begin});
         } );
 
         window.addEventListener("keyup", e => {
@@ -75,6 +78,7 @@ class InputHandler {
 
            // if (lowerCaseKey in KeycodeLookupTable)
                 this.SetKeyboardState(lowerCaseKey, false);
+                if (callback != null) callback({keycode: lowerCaseKey, status: ButtonStatus.Release});
         } );
     }
 

@@ -6,9 +6,8 @@ export const Config = Object.freeze({
 });
 
 export const PinballLayer = Object.freeze({
-    "Flipper_Right": 6,
-    "Flipper_Left": 7,
-
+    "Flipper_Left": 6,
+    "Flipper_Right": 7,
 });
 
 export const GRAVITY = -10;

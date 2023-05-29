@@ -1,3 +1,4 @@
+import { Dictionary } from 'typescript-collections';
 import {IntVector2} from './UniversalType';
 import {quat, vec3} from 'gl-matrix'
 export function Lerp(x : number, y : number, t : number) {
@@ -55,17 +56,22 @@ export function VectorAdd(a : IntVector2, b : IntVector2) {
     }
 }
 
-export function PerpendicularClockwise(vector: IntVector2) : IntVector2
-{
-    return {x: vector.y, y: -vector.x};
-}
-
-export function VectorMinus(a : IntVector2, b : IntVector2) {
+export function VectorSubstract(a : IntVector2, b : IntVector2) {
     return {
         x : a.x - b.x,
         y : a.y - b.y
     }
 }
+
+export function VectorDot(a : IntVector2, b : IntVector2) {
+    return (a.x * b.x) + (a.y * b.y);
+}
+
+export function PerpendicularClockwise(vector: IntVector2) : IntVector2
+{
+    return {x: vector.y, y: -vector.x};
+}
+
 
 export function VectorToArray(v :IntVector2 ) : number[] {
     return [v.x, v.y];
@@ -144,4 +150,15 @@ export function AABB(objectA_x: number, objectA_y: number, objectA_width: number
         objectA_x + objectA_width > objectB_x &&
         objectA_y < objectB_y + objectB_height &&
         objectA_height + objectA_y > objectB_y);
+}
+
+export function PushDictionaryArray<T, K>(key: T, value: K, dictionary: Dictionary<T, K[]>) {
+    if (dictionary.containsKey(key)) {
+        let array = dictionary.getValue(key);
+        array.push(value);
+    } else {
+        dictionary.setValue(key, [value]);
+    }
+
+    return dictionary;
 }

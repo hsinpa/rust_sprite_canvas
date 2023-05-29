@@ -52,7 +52,20 @@ export interface SpriteLayoutStruct {
     tag: number,
     properties: string,
     collisionStruct : ColliderStruct,
+    constraintStruct : ConstraintStruct,
 }
+
+export interface ConstraintStruct {
+    max_rotation: number,
+    min_rotation: number,
+    
+    max_y: number,
+    min_y: number,
+
+    max_x: number,
+    min_x: number,
+}
+
 
 export enum CollisionType { Line = 0, Rect, Oval, Sphere }
 

@@ -10,13 +10,16 @@ export interface PositionTransformation {
 export abstract class PhysicsInterface {
 
     protected _id: number;
+    protected _tag: number;
+
     protected _base_unit: number;
     protected _positionTransformCallback: PositionTransformation;
     protected _transform: PhysicsTransform;
     public get Id() { return this._id; }
 
-    constructor(id: number, base_unit: number) {
+    constructor(id: number, tag: number, base_unit: number) {
         this._id = id;
+        this._tag = tag;
         this._base_unit = base_unit;
     }
 
@@ -24,7 +27,11 @@ export abstract class PhysicsInterface {
         this._transform = p_transform;
     }
 
+    
+
     abstract parse_collision_struct(collision_data: ColliderStruct): void;
+    abstract parse_properties_struct(properties_data: string): void;
+
     abstract handle_collision(physicsObject: PhysicsTransform): void;
     abstract render_collider(graphics: Graphics, screen_height: number): void;
 }

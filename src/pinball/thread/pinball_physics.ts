@@ -1,37 +1,38 @@
-import { Config } from "../utility/pinball_static";
+import { Config, PinballLayer } from "../utility/pinball_static";
 import { PhysicsTransform } from "../utility/pinball_types";
 import { WorldConstructStruct } from "./pinball_thread_event";
-import { VectorNumScale, VectorAdd } from "../../utility/UtilityMethod";
+import { VectorNumScale, VectorAdd, PushDictionaryArray } from "../../utility/UtilityMethod";
 import { CollisionType, SceneLayoutStruct, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
 import { Dictionary } from "typescript-collections";
-import { PhysicsInterface } from "../physics_component/PhysicsInterface";
+import { PhysicsInterface } from "../collider_component/PhysicsInterface";
+import { ObjectInterface } from "../object_component/ObjectInterface";
+import { parse_collection_opt } from "../collider_component/PhysicsVisualizeTool";
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
     private _sphere_objects: PhysicsTransform[] = [];
+    public physics_components : Dictionary<number, PhysicsInterface> = new Dictionary();
+    public physics_tags : Dictionary<number, number[]> = new Dictionary();
 
     public get simulated_object() { return this._sphere_objects; } 
-    private physics_components : Dictionary<number, PhysicsInterface> = new Dictionary();
 
     set_constraint(data : SceneLayoutStruct) {
         this._world_struct = data;
         console.log(this._world_struct);
-
-        let s_lens = this._world_struct.spriteLayoutStructs.length;
-
-        for (let i = 0; i < s_lens; i++) 
-            this.parse_collision_data(this._world_struct.spriteLayoutStructs[i]);
+        
+        parse_collection_opt(data, (spriteLayout, physicsInterface) => {
+            this.physics_components.setValue(spriteLayout.id, physicsInterface);
+            this.physics_tags = PushDictionaryArray(spriteLayout.tag, spriteLayout.id, this.physics_tags);
+        });
     }
 
     push(sphere_object : PhysicsTransform) {
         this._sphere_objects.push(sphere_object);
     }
 
-    parse_collision_data(spriteLayoutStructs : SpriteLayoutStruct) {
-        if (spriteLayoutStructs.collisionStruct == null || spriteLayoutStructs.collisionStruct.data == "") return;
-
-            
-    
+    parse_attribute_data(spriteLayoutStructs : SpriteLayoutStruct) {
+        if (spriteLayoutStructs.properties == null || spriteLayoutStructs.properties == "") return;
+        
     }
 
     collision(sphere_object: PhysicsTransform) {

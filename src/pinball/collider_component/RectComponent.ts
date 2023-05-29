@@ -18,4 +18,7 @@ export default class RectComponent extends PhysicsInterface {
         this._rectCollision = JSON.parse(collision_data.data);
     }
 
+    parse_properties_struct(properties_data: string): void {
+        
+    }
 }

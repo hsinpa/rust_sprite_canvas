@@ -12,6 +12,10 @@ export default class SphereComponent extends PhysicsInterface {
 
     }
 
+    parse_properties_struct(properties_data: string): void {
+        
+    }
+
     parse_collision_struct(collision_data: ColliderStruct): void {
        this._sphereCollision = JSON.parse(collision_data.data);
 

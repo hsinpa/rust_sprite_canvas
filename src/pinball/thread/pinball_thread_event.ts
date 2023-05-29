@@ -1,4 +1,5 @@
-import {SphereObject} from '../utility/pinball_types';
+import { ButtonState } from '../../utility/Input/InputHandler';
+import {PhysicsTransform} from '../utility/pinball_types';
 import { SceneLayoutStruct } from '../utility/unity_sprite_struct';
 
 export const ThreadEventKey = Object.freeze( {
@@ -7,6 +8,7 @@ export const ThreadEventKey = Object.freeze( {
     ObjectPush: "thread@object_push",
     ObjectDelete: "thread@object_delete",
     ObjectUpdate: "thread@object_update",
+    Input: "thread@input"
 });
 
 export interface ThreadEventInterface {
@@ -18,9 +20,12 @@ export interface WorldConstructStruct extends ThreadEventInterface {
 }
 
 export interface ObjectPushStruct extends ThreadEventInterface {
-    spheres: SphereObject[]
 }
 
 export interface SimulateStruct extends ThreadEventInterface {
     delta_time: number
+}
+
+export interface InputStruct extends ThreadEventInterface {
+    state: ButtonState,
 }

@@ -9,20 +9,21 @@ import SphereComponent from "./SphereComponent";
 export function parse_collision_data(spriteLayoutStructs : SpriteLayoutStruct, base_unit : number) : PhysicsInterface {
     if (spriteLayoutStructs.collisionStruct == null || spriteLayoutStructs.collisionStruct.data == "") return;
 
-    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Line) return new LineComponent(spriteLayoutStructs.id, base_unit);
-    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Oval) return new OvalComponent(spriteLayoutStructs.id, base_unit);
-    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Rect) return new RectComponent(spriteLayoutStructs.id, base_unit);
-    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Sphere) return new SphereComponent(spriteLayoutStructs.id, base_unit);
+    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Line) return new LineComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, base_unit);
+    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Oval) return new OvalComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, base_unit);
+    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Rect) return new RectComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, base_unit);
+    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Sphere) return new SphereComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, base_unit);
 
     return null;
 }
 
-export function parse_collision_array(layout: SceneLayoutStruct) {
-    const base_width = layout.screen_width / layout.frame_width;
-    const base_height = layout.screen_height / layout.frame_height;
-    
+export function parse_sprite_struct(sprite_layout: SpriteLayoutStruct) {
+
+}
+
+export function parse_collection_opt(layout: SceneLayoutStruct, callback: (spriteLayout: SpriteLayoutStruct, physicsInterface: PhysicsInterface) => void) {
+    const base_width = layout.screen_width / layout.frame_width;    
     let objectLens = layout.spriteLayoutStructs.length;
-    let physicsComponents: PhysicsInterface[] = [];
 
     for (let i = 0; i < objectLens; i++) {
         let spriteStruct = layout.spriteLayoutStructs[i];
@@ -35,9 +36,18 @@ export function parse_collision_array(layout: SceneLayoutStruct) {
             position: {x: spriteStruct.x, y: spriteStruct.y }, scale: {x: spriteStruct.scale_x, y: spriteStruct.scale_y}});
 
         physicsInterface.parse_collision_struct(spriteStruct.collisionStruct);
+        physicsInterface.parse_properties_struct(spriteStruct.properties);
 
-        physicsComponents.push(physicsInterface);
+        callback(spriteStruct, physicsInterface);
     }
+}
+
+export function parse_collision_array(layout: SceneLayoutStruct) {
+    let physicsComponents: PhysicsInterface[] = [];
+
+    parse_collection_opt(layout, (spriteLayout, physicsInterface) => {
+        physicsComponents.push(physicsInterface);
+    });
 
     return physicsComponents;
 }

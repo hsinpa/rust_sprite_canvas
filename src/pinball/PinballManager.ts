@@ -8,9 +8,9 @@ import {DynamicRenderer} from './DynamicRenderer';
 import { vec2 } from "gl-matrix";
 import { PhysicsTransform } from "./utility/pinball_types";
 import { Clamp } from "../utility/UtilityMethod";
-import InputHandler from "../utility/Input/InputHandler";
+import InputHandler, { ButtonState } from "../utility/Input/InputHandler";
 import { InputEventTitle} from "../utility/Input/KeycodeTable";
-import { PhysicsVisualizeTool } from "./physics_component/PhysicsVisualizeTool";
+import { PhysicsVisualizeTool } from "./collider_component/PhysicsVisualizeTool";
 
 export class PinballManager {
 
@@ -39,7 +39,7 @@ export class PinballManager {
 
         this._physics_worker.onmessage = this.on_worker_callback.bind(this);
         this._inputHandler = new InputHandler();
-        this._inputHandler.RegisterKeyCodeEvent();
+        this._inputHandler.RegisterKeyCodeEvent(this.on_keyboard_input.bind(this));
 
         this._spriteAssets = new SpriteAssetManager();
         this._mapLayoutManager = new MapLayoutManager(this._spriteAssets);
@@ -108,7 +108,6 @@ export class PinballManager {
 
             this.DeltaTime = (timestamp - this._previous_timestamp) * 0.001;
             this.DeltaTime = Clamp(this.DeltaTime, 0.001, 0.02);
-            //this.on_keyboard_input();
 
             this._previous_timestamp = timestamp;
             this._physics_worker.postMessage({id: ThreadEventKey.Simulate, delta_time: this.DeltaTime});    
@@ -118,10 +117,9 @@ export class PinballManager {
         window.requestAnimationFrame(this.update_loop.bind(this));
     }
 
-    private on_keyboard_input() {
-        let flipper_right = this._inputHandler.GetButtonState(InputEventTitle.l_slash);
-        let flipper_left = this._inputHandler.GetButtonState(InputEventTitle.z);
-        
-        this._mapLayoutManager._flipper_left.rotation = (flipper_left) ? -0.5 : 0.5;
+    private on_keyboard_input(buttonState: ButtonState) {
+        //console.log(`ButtonState ${buttonState.keycode}, ${buttonState.status}`);
+
+        this._physics_worker.postMessage({id: ThreadEventKey.Input, state: buttonState});    
     }
 }
