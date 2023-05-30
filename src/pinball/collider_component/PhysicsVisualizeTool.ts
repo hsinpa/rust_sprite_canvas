@@ -5,6 +5,7 @@ import OvalComponent from "./OvalComponent";
 import { PhysicsInterface } from "./PhysicsInterface";
 import RectComponent from "./RectComponent";
 import SphereComponent from "./SphereComponent";
+import { IntVector2 } from "../../utility/UniversalType";
 
 export function parse_collision_data(spriteLayoutStructs : SpriteLayoutStruct, base_unit : number) : PhysicsInterface {
     if (spriteLayoutStructs.collisionStruct == null || spriteLayoutStructs.collisionStruct.data == "") return;
@@ -26,6 +27,7 @@ export function parse_sprite_struct(sprite_layout: SpriteLayoutStruct) {
 export function parse_collection_opt(layout: SceneLayoutStruct, callback: (spriteLayout: SpriteLayoutStruct, physicsInterface: PhysicsInterface) => void) {
     const base_width = layout.screen_width / layout.frame_width;    
     let objectLens = layout.spriteLayoutStructs.length;
+    const zero_vector : IntVector2 = {x : 0, y: 0};
 
     for (let i = 0; i < objectLens; i++) {
         let spriteStruct = layout.spriteLayoutStructs[i];
@@ -33,8 +35,11 @@ export function parse_collection_opt(layout: SceneLayoutStruct, callback: (sprit
 
         if (physicsInterface == null) continue;
         physicsInterface.set_transform({
+            velocity: zero_vector, acceleration: zero_vector,
             id: spriteStruct.id, rotation: spriteStruct.rotation,
-            position: {x: spriteStruct.x, y: spriteStruct.y }, scale: {x: spriteStruct.scale_x, y: spriteStruct.scale_y}}, spriteStruct.constraintStruct);
+            position: {x: spriteStruct.x, y: spriteStruct.y }, scale: {x: spriteStruct.scale_x, y: spriteStruct.scale_y}
+            
+        }, spriteStruct.constraintStruct);
 
         physicsInterface.parse_collision_struct(spriteStruct.collisionStruct);
         physicsInterface.parse_properties_struct(spriteStruct.properties);

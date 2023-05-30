@@ -7,6 +7,7 @@ import { Dictionary } from "typescript-collections";
 import { PhysicsInterface } from "../collider_component/PhysicsInterface";
 import { ObjectInterface } from "../object_component/ObjectInterface";
 import { parse_collection_opt } from "../collider_component/PhysicsVisualizeTool";
+import { IntVector2 } from "../../utility/UniversalType";
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
@@ -67,6 +68,8 @@ export class PinballPhysics {
     simulate(delta_time: number) {
         
         let index = 0;
+        let gravity : IntVector2= {x: 0, y : -100};
+
         this.physics_components.forEach((id, physicsInterface) => {
 
             //Rotation
@@ -79,6 +82,17 @@ export class PinballPhysics {
                 }
             
                 physicsInterface.Transform.rotation = rotation;
+            }
+
+            //Translation
+            if (physicsInterface.Tag == PinballLayer.Ball && physicsInterface.Transform.velocity != undefined) {
+
+                let acceleration = gravity;
+                let velocity = VectorAdd(physicsInterface.Transform.velocity, (VectorNumScale(acceleration, delta_time)));
+                let position = VectorAdd(physicsInterface.Transform.position, (VectorNumScale(velocity, delta_time)));
+
+                physicsInterface.Transform.velocity = velocity;
+                physicsInterface.Transform.position = position;    
             }
 
             index++;

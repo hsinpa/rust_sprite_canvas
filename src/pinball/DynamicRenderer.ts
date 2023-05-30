@@ -25,7 +25,7 @@ export class DynamicRenderer{
 
             sprite.rotation = d_obj.rotation;
 
-
+            sprite.position.set(d_obj.position.x, d_obj.position.y );
             //this.draw_sphere(d_obj as SphereObject);
         }
     }
