@@ -1,6 +1,6 @@
 import {PhysicsInterface, PositionTransformation} from './PhysicsInterface';
 import { PhysicsTransform } from "../utility/pinball_types";
-import { ColliderStruct, SphereCollision, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
+import { ColliderStruct, ConstraintStruct, SphereCollision, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
 import { IntVector2 } from "../../utility/UniversalType";
 import { Graphics } from 'pixi.js';
 
@@ -22,6 +22,8 @@ export default class SphereComponent extends PhysicsInterface {
        this._sphereCollision.x = this._sphereCollision.x * this._base_unit;
        this._sphereCollision.y = this._sphereCollision.y * this._base_unit;
        this._sphereCollision.radius *= this._base_unit;
+
+       this._transform.radius = this._sphereCollision.radius;
     }
 
     render_collider(graphics: Graphics, screen_height: number): void {

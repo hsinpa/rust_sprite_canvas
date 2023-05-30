@@ -33,10 +33,11 @@ export abstract class PhysicsInterface {
 
     set_transform(p_transform : PhysicsTransform, contraint_struct: ConstraintStruct) {
         this._transform = p_transform;
-        this._constraintStruct = contraint_struct;
 
-        if (this._constraintStruct != undefined && this._constraintStruct.rest_point != 0)
-            this._transform.rotation = this._constraintStruct.rest_point;
+        if (contraint_struct != null && contraint_struct.rest_point != 0) {
+            this._constraintStruct = contraint_struct;
+            this._transform.rotation = contraint_struct.rest_point;
+        }
     }
 
     abstract parse_collision_struct(collision_data: ColliderStruct): void;

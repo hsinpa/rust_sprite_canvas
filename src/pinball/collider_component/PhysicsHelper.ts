@@ -4,12 +4,16 @@ import { SphereCollision } from "../utility/unity_sprite_struct";
 import { IntVector2 } from "../../utility/UniversalType";
 import { VectorSubstract, VectorDot, Clamp, VectorNumScale, VectorAdd} from "../../utility/UtilityMethod";
 
-export function ConvertSphereToPoint(sphereCollision: SphereCollision, transform: PhysicsTransform, sourcePoint: Point, sourceMatrix: Matrix, baseUnit: number) {
-    let rotationMatrix = sourceMatrix.identity().rotate(transform.rotation);
-
+export function NormalizeSphereCollider(sphereCollision: SphereCollision, baseUnit: number) {
     sphereCollision.x *= baseUnit;
     sphereCollision.y *= baseUnit;
     sphereCollision.radius *= baseUnit;
+
+    return sphereCollision;
+}
+
+export function ConvertSphereToPoint(sphereCollision: SphereCollision, transform: PhysicsTransform, sourcePoint: Point, sourceMatrix: Matrix) {
+    let rotationMatrix = sourceMatrix.identity().rotate(transform.rotation);
 
     sourcePoint = sourcePoint.set(sphereCollision.x, sphereCollision.y);
 
@@ -29,16 +33,4 @@ export function closestPointOnSegment(point: IntVector2, a : IntVector2, b : Int
 
     let offset = VectorNumScale(ab, t);
     return VectorAdd(a, offset);
-}
-
-export function getFlipperPhysics(id: number, max_rotation: number, min_rotation: number) : PhysicsTransform {
-    return {
-        id : id,
-        position: {x: 0, y: 0},
-        velocity:  {x: 0, y: 0},
-        acceleration:  {x: 0, y: 0},
-        scale:{x: 1, y: 1},
-        rotation: min_rotation,
-        angular: 0,
-    };
 }

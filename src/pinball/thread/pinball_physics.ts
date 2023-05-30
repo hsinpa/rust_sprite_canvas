@@ -23,9 +23,12 @@ export class PinballPhysics {
         console.log(this._world_struct);
         
         parse_collection_opt(data, (spriteLayout, physicsInterface) => {
-            this._physics_transform.push(physicsInterface.Transform);
             this.physics_components.setValue(spriteLayout.id, physicsInterface);
             this.physics_tags = PushDictionaryArray(spriteLayout.tag, spriteLayout.id, this.physics_tags);
+
+            //Don't process static object
+            if (physicsInterface.Tag == 0) return;
+            this._physics_transform.push(physicsInterface.Transform);
         });
     }
 
@@ -37,32 +40,42 @@ export class PinballPhysics {
         
     }
 
-    world_boundary_collision(sphere_object: PhysicsTransform) {
+    world_object_collision(ball_object: PhysicsTransform) {
+
+        //Left Flipper
+        let l_flippers = this.physics_tags.getValue(PinballLayer.Flipper_Left);
+        l_flippers.forEach(x => {
+            this.physics_components.getValue(x).handle_collision(ball_object);
+        });
+    }
+
+    world_boundary_collision(ball_object: PhysicsTransform) {
+        if (ball_object.radius == undefined) return ball_object;
 
         //Left
-        if (sphere_object.position.x < sphere_object.radius) {
-            sphere_object.position.x = sphere_object.radius;
-            sphere_object.velocity.x = -sphere_object.velocity.x;
+        if (ball_object.position.x < ball_object.radius) {
+            ball_object.position.x = ball_object.radius;
+            ball_object.velocity.x = -ball_object.velocity.x;
         }
 
         //Right
-        if (sphere_object.position.x > this._world_struct.screen_width - sphere_object.radius) {
-            sphere_object.position.x = this._world_struct.screen_width - sphere_object.radius;
-            sphere_object.velocity.x = -sphere_object.velocity.x;
+        if (ball_object.position.x > this._world_struct.screen_width - ball_object.radius) {
+            ball_object.position.x = this._world_struct.screen_width - ball_object.radius;
+            ball_object.velocity.x = -ball_object.velocity.x;
         }
 
         //Bottom
-        if (sphere_object.position.y < sphere_object.radius) {
-            sphere_object.position.y = sphere_object.radius;
-            sphere_object.velocity.y = -sphere_object.velocity.y;
+        if (ball_object.position.y < ball_object.radius) {
+            ball_object.position.y = ball_object.radius;
+            ball_object.velocity.y = -ball_object.velocity.y;
         }
 
-        if (sphere_object.position.y > this._world_struct.screen_width - sphere_object.radius) {
-            sphere_object.position.y = this._world_struct.screen_width - sphere_object.radius;
-            sphere_object.velocity.y = -sphere_object.velocity.y;
+        if (ball_object.position.y > this._world_struct.screen_height - ball_object.radius) {
+            ball_object.position.y = this._world_struct.screen_height - ball_object.radius;
+            ball_object.velocity.y = -ball_object.velocity.y;
         }
 
-        return sphere_object;
+        return ball_object;
     }
 
     simulate(delta_time: number) {
@@ -86,13 +99,20 @@ export class PinballPhysics {
 
             //Translation
             if (physicsInterface.Tag == PinballLayer.Ball && physicsInterface.Transform.velocity != undefined) {
+                let convert_position = physicsInterface.Transform.position;
+                    convert_position.y = this._world_struct.screen_height - convert_position.y;
 
                 let acceleration = gravity;
                 let velocity = VectorAdd(physicsInterface.Transform.velocity, (VectorNumScale(acceleration, delta_time)));
-                let position = VectorAdd(physicsInterface.Transform.position, (VectorNumScale(velocity, delta_time)));
+                let position = VectorAdd(convert_position, (VectorNumScale(velocity, delta_time)));
+                position.y = this._world_struct.screen_height - position.y;
 
                 physicsInterface.Transform.velocity = velocity;
                 physicsInterface.Transform.position = position;    
+
+                this.world_object_collision(physicsInterface.Transform);
+                this.world_boundary_collision(physicsInterface.Transform);
+
             }
 
             index++;

@@ -7,14 +7,16 @@ import { PinballLayer } from '../utility/pinball_static';
 import { PerpendicularClockwise, VectorSubstract, Normalize2D, VectorNumScale } from "../../utility/UtilityMethod";
 
 import { Graphics, Matrix, Point } from 'pixi.js';
-import {ConvertSphereToPoint} from './PhysicsHelper'
+import {ConvertSphereToPoint, NormalizeSphereCollider, closestPointOnSegment} from './PhysicsHelper'
 
 export default class OvalComponent extends PhysicsInterface {
     private _ovalCollision: OvalCollision;
     private _rotationMatrix: Matrix;
+    private _ori_sphere_a: Point;
+    private _ori_sphere_b: Point;
+
     private _sphere_a: Point;
     private _sphere_b: Point;
-
 
     constructor(id: number, tag: number, inverse: number, base_unit: number) {
         super(id, tag, inverse, base_unit);
@@ -24,6 +26,13 @@ export default class OvalComponent extends PhysicsInterface {
     }   
 
     handle_collision(physicsObject: PhysicsTransform): void {
+        if (physicsObject.radius == undefined) return;
+
+        this._sphere_a = ConvertSphereToPoint(this._ovalCollision.sphere_a, this._transform, this._sphere_a, this._rotationMatrix);
+        this._sphere_b = ConvertSphereToPoint(this._ovalCollision.sphere_b, this._transform, this._sphere_b, this._rotationMatrix);
+
+        var closest = closestPointOnSegment(physicsObject.position, {x: this._sphere_a.x , y: this._sphere_a.y}, {x: this._sphere_b.x , y: this._sphere_b.y});
+        
     }
 
     parse_properties_struct(properties_data: string): void {
@@ -63,7 +72,10 @@ export default class OvalComponent extends PhysicsInterface {
     parse_collision_struct(collision_data: ColliderStruct): void {
         this._ovalCollision = JSON.parse(collision_data.data);
 
-        this._sphere_a = ConvertSphereToPoint(this._ovalCollision.sphere_a, this._transform, this._sphere_a, this._rotationMatrix, this._base_unit);
-        this._sphere_b = ConvertSphereToPoint(this._ovalCollision.sphere_b, this._transform, this._sphere_b, this._rotationMatrix, this._base_unit);
+        this._ovalCollision.sphere_a = NormalizeSphereCollider(this._ovalCollision.sphere_a, this._base_unit);
+        this._ovalCollision.sphere_b = NormalizeSphereCollider(this._ovalCollision.sphere_b, this._base_unit);
+
+        this._sphere_a = ConvertSphereToPoint(this._ovalCollision.sphere_a, this._transform, this._sphere_a, this._rotationMatrix);
+        this._sphere_b = ConvertSphereToPoint(this._ovalCollision.sphere_b, this._transform, this._sphere_b, this._rotationMatrix);
     }
 }

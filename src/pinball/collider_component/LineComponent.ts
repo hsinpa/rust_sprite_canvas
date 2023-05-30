@@ -17,7 +17,6 @@ export default class LineComponent extends PhysicsInterface {
 
     parse_collision_struct(collision_data: ColliderStruct): void {
         this._lineCollision = JSON.parse(collision_data.data);
-
         this._rotationMatrix = this._rotationMatrix.rotate(this._transform.rotation);
 
         let new_point_a = this._rotationMatrix.apply(new Point(this._lineCollision.point_a.x, this._lineCollision.point_a.y) );
