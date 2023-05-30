@@ -9,10 +9,12 @@ import SphereComponent from "./SphereComponent";
 export function parse_collision_data(spriteLayoutStructs : SpriteLayoutStruct, base_unit : number) : PhysicsInterface {
     if (spriteLayoutStructs.collisionStruct == null || spriteLayoutStructs.collisionStruct.data == "") return;
 
-    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Line) return new LineComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, base_unit);
-    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Oval) return new OvalComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, base_unit);
-    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Rect) return new RectComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, base_unit);
-    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Sphere) return new SphereComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, base_unit);
+    let inverse_value = (spriteLayoutStructs.flip_x == 1) ? -1 : 1;
+
+    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Line) return new LineComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, inverse_value, base_unit);
+    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Oval) return new OvalComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, inverse_value, base_unit);
+    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Rect) return new RectComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, inverse_value, base_unit);
+    if (spriteLayoutStructs.collisionStruct.collisionType == CollisionType.Sphere) return new SphereComponent(spriteLayoutStructs.id, spriteLayoutStructs.tag, inverse_value,base_unit);
 
     return null;
 }
@@ -30,10 +32,9 @@ export function parse_collection_opt(layout: SceneLayoutStruct, callback: (sprit
         let physicsInterface = parse_collision_data(spriteStruct, base_width);
 
         if (physicsInterface == null) continue;
-
-        physicsInterface.update_transform({
+        physicsInterface.set_transform({
             id: spriteStruct.id, rotation: spriteStruct.rotation,
-            position: {x: spriteStruct.x, y: spriteStruct.y }, scale: {x: spriteStruct.scale_x, y: spriteStruct.scale_y}});
+            position: {x: spriteStruct.x, y: spriteStruct.y }, scale: {x: spriteStruct.scale_x, y: spriteStruct.scale_y}}, spriteStruct.constraintStruct);
 
         physicsInterface.parse_collision_struct(spriteStruct.collisionStruct);
         physicsInterface.parse_properties_struct(spriteStruct.properties);

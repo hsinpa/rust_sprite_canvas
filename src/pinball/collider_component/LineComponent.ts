@@ -10,15 +10,15 @@ export default class LineComponent extends PhysicsInterface {
     private _lineCollision: LineCollision;
     private _rotationMatrix: Matrix;
 
-    constructor(id: number, tag: number, base_unit: number) {
-        super(id, tag, base_unit);
+    constructor(id: number, tag: number, inverse_value : number, base_unit: number) {
+        super(id, tag, inverse_value, base_unit);
         this._rotationMatrix = new Matrix();
     }
 
     parse_collision_struct(collision_data: ColliderStruct): void {
         this._lineCollision = JSON.parse(collision_data.data);
 
-        this._rotationMatrix = this._rotationMatrix.rotate(-this._transform.rotation);
+        this._rotationMatrix = this._rotationMatrix.rotate(this._transform.rotation);
 
         let new_point_a = this._rotationMatrix.apply(new Point(this._lineCollision.point_a.x, this._lineCollision.point_a.y) );
         let new_point_b = this._rotationMatrix.apply(new Point(this._lineCollision.point_b.x, this._lineCollision.point_b.y) );

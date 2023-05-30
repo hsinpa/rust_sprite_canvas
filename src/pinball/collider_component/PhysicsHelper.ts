@@ -5,7 +5,7 @@ import { IntVector2 } from "../../utility/UniversalType";
 import { VectorSubstract, VectorDot, Clamp, VectorNumScale, VectorAdd} from "../../utility/UtilityMethod";
 
 export function ConvertSphereToPoint(sphereCollision: SphereCollision, transform: PhysicsTransform, sourcePoint: Point, sourceMatrix: Matrix, baseUnit: number) {
-    let rotationMatrix = sourceMatrix.identity().rotate(-transform.rotation);
+    let rotationMatrix = sourceMatrix.identity().rotate(transform.rotation);
 
     sphereCollision.x *= baseUnit;
     sphereCollision.y *= baseUnit;

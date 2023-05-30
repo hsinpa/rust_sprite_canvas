@@ -13,13 +13,18 @@ export class DynamicRenderer{
 
     public get get_primitive_grapics () { return this._primitives; };
 
-    draw(dynamics: any[]) {
+    draw(dynamics: PhysicsTransform[]) {
         this._primitives.clear();
         const lens = dynamics.length;
 
         //console.log(lens);
         for (let i = 0; i < lens; i++) {
             let d_obj = dynamics[i];
+
+            let sprite = this._mapLayout.get_sprite(d_obj.id);
+
+            sprite.rotation = d_obj.rotation;
+
 
             //this.draw_sphere(d_obj as SphereObject);
         }

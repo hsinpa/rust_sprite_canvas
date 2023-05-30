@@ -58,14 +58,16 @@ export interface SpriteLayoutStruct {
 export interface ConstraintStruct {
     max_rotation: number,
     min_rotation: number,
+    rest_point: number,
     
     max_y: number,
     min_y: number,
+    rest_y: number,
 
     max_x: number,
     min_x: number,
+    rest_x: number,
 }
-
 
 export enum CollisionType { Line = 0, Rect, Oval, Sphere }
 

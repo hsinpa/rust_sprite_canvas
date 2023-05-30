@@ -1,5 +1,5 @@
 import { PhysicsTransform } from "../utility/pinball_types";
-import { ColliderStruct, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
+import { ColliderStruct, ConstraintStruct, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
 import { IntVector2 } from "../../utility/UniversalType";
 import { Graphics } from "pixi.js";
 
@@ -15,19 +15,29 @@ export abstract class PhysicsInterface {
     protected _base_unit: number;
     protected _positionTransformCallback: PositionTransformation;
     protected _transform: PhysicsTransform;
-    public get Id() { return this._id; }
+    protected _inverse: number;
+    protected _constraintStruct: ConstraintStruct;
 
-    constructor(id: number, tag: number, base_unit: number) {
+    public get Id() { return this._id; }
+    public get Tag() { return this._tag; }
+    public get Transform() { return this._transform; }
+    public get Inverse() { return this._inverse; }
+    public get Constraint() { return this._constraintStruct; }
+
+    constructor(id: number, tag: number, inverse: number, base_unit: number) {
         this._id = id;
         this._tag = tag;
+        this._inverse = inverse;
         this._base_unit = base_unit;
     }
 
-    update_transform(p_transform : PhysicsTransform) {
+    set_transform(p_transform : PhysicsTransform, contraint_struct: ConstraintStruct) {
         this._transform = p_transform;
-    }
+        this._constraintStruct = contraint_struct;
 
-    
+        if (this._constraintStruct != undefined && this._constraintStruct.rest_point != 0)
+            this._transform.rotation = this._constraintStruct.rest_point;
+    }
 
     abstract parse_collision_struct(collision_data: ColliderStruct): void;
     abstract parse_properties_struct(properties_data: string): void;

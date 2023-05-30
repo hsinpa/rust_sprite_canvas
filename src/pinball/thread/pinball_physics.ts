@@ -1,7 +1,7 @@
 import { Config, PinballLayer } from "../utility/pinball_static";
 import { PhysicsTransform } from "../utility/pinball_types";
 import { WorldConstructStruct } from "./pinball_thread_event";
-import { VectorNumScale, VectorAdd, PushDictionaryArray } from "../../utility/UtilityMethod";
+import { VectorNumScale, VectorAdd, PushDictionaryArray, Clamp } from "../../utility/UtilityMethod";
 import { CollisionType, SceneLayoutStruct, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
 import { Dictionary } from "typescript-collections";
 import { PhysicsInterface } from "../collider_component/PhysicsInterface";
@@ -10,24 +10,25 @@ import { parse_collection_opt } from "../collider_component/PhysicsVisualizeTool
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
-    private _sphere_objects: PhysicsTransform[] = [];
     public physics_components : Dictionary<number, PhysicsInterface> = new Dictionary();
+    private _physics_transform : PhysicsTransform[] = [];
+
     public physics_tags : Dictionary<number, number[]> = new Dictionary();
 
-    public get simulated_object() { return this._sphere_objects; } 
+    public get simulated_object() { return this._physics_transform; } 
 
     set_constraint(data : SceneLayoutStruct) {
         this._world_struct = data;
         console.log(this._world_struct);
         
         parse_collection_opt(data, (spriteLayout, physicsInterface) => {
+            this._physics_transform.push(physicsInterface.Transform);
             this.physics_components.setValue(spriteLayout.id, physicsInterface);
             this.physics_tags = PushDictionaryArray(spriteLayout.tag, spriteLayout.id, this.physics_tags);
         });
     }
 
     push(sphere_object : PhysicsTransform) {
-        this._sphere_objects.push(sphere_object);
     }
 
     parse_attribute_data(spriteLayoutStructs : SpriteLayoutStruct) {
@@ -35,7 +36,7 @@ export class PinballPhysics {
         
     }
 
-    collision(sphere_object: PhysicsTransform) {
+    world_boundary_collision(sphere_object: PhysicsTransform) {
 
         //Left
         if (sphere_object.position.x < sphere_object.radius) {
@@ -64,20 +65,23 @@ export class PinballPhysics {
     }
 
     simulate(delta_time: number) {
-        if (this._sphere_objects == null) return;
-
-        const lens = this._sphere_objects.length;
         
-        for (let i = 0; i < lens; i++) {
-            let d = this._sphere_objects[i];
-        
-            d.acceleration = {x: 0, y : -100};
-            d.velocity = VectorAdd(d.velocity, (VectorNumScale(d.acceleration, delta_time)));
-            d.position = VectorAdd(d.position, (VectorNumScale(d.velocity, delta_time)));
+        let index = 0;
+        this.physics_components.forEach((id, physicsInterface) => {
 
-            d = this.collision(d);
+            //Rotation
+            if (physicsInterface.Transform.angular != undefined) {
+                let rotation = physicsInterface.Transform.rotation + (physicsInterface.Transform.angular * delta_time * physicsInterface.Inverse);
+                
+                if (physicsInterface.Constraint != undefined && physicsInterface.Constraint.max_rotation != undefined && physicsInterface.Constraint.min_rotation != undefined ) {
 
-            this._sphere_objects[i] = d;
-        }
+                    rotation = Clamp(rotation, physicsInterface.Constraint.min_rotation, physicsInterface.Constraint.max_rotation);
+                }
+            
+                physicsInterface.Transform.rotation = rotation;
+            }
+
+            index++;
+        });
     }
 }

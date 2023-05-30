@@ -1,6 +1,6 @@
 import { Application, Sprite } from "pixi.js";
 import { SpriteAssetManager } from "./SpriteAssetManager";
-import { Config } from "./utility/pinball_static";
+import { Config, PinballLayer } from "./utility/pinball_static";
 import { SpriteSyntaxStruct } from "./utility/unity_sprite_struct";
 import MapLayoutManager from "./MapLayoutManager";
 import {ThreadEventKey} from "./thread/pinball_thread_event";
@@ -11,6 +11,7 @@ import { Clamp } from "../utility/UtilityMethod";
 import InputHandler, { ButtonState } from "../utility/Input/InputHandler";
 import { InputEventTitle} from "../utility/Input/KeycodeTable";
 import { PhysicsVisualizeTool } from "./collider_component/PhysicsVisualizeTool";
+import { PhysicsInterface } from "./collider_component/PhysicsInterface";
 
 export class PinballManager {
 
@@ -28,8 +29,7 @@ export class PinballManager {
 
     private _physics_worker: Worker;
     private _woker_ready_flag: boolean = false;
-    private demo_sphere: PhysicsTransform;
-    private _objects: any[] = [];
+    private _objects: PhysicsTransform[] = [];
 
     constructor(query: string) {
         this._pixi_dom = document.querySelector(query);
@@ -45,17 +45,6 @@ export class PinballManager {
         this._mapLayoutManager = new MapLayoutManager(this._spriteAssets);
         this._dynamicsRenderer = new DynamicRenderer(this._mapLayoutManager);
 
-        this.demo_sphere = {
-            id : 323,
-            angular: 0,
-            position: {x: 200, y: 200},
-            velocity:  {x: 0, y: 0},
-            acceleration:  {x: 0, y: 0},
-            rotation: 0,
-            scale:{x: 1, y: 1},
-            radius: 20
-        };
-        this._objects.push(this.demo_sphere);
         this.prepare_layout_asset();
         this.update_loop(0);
     }
@@ -82,8 +71,8 @@ export class PinballManager {
         this._visualizer.visualize();
 
         this._physics_worker.postMessage({id: ThreadEventKey.WorldConstruct, scene_layout: sceneLayout });
-        this._physics_worker.postMessage({id: ThreadEventKey.ObjectPush, 
-                                                spheres: [this.demo_sphere] });
+        // this._physics_worker.postMessage({id: ThreadEventKey.ObjectPush, 
+        //                                         spheres: [] });
 
         this._pixi_app.stage.addChild(this._dynamicsRenderer.get_primitive_grapics);
         this._pixi_app.stage.addChild(this._visualizer.Primitives);
@@ -97,6 +86,15 @@ export class PinballManager {
         if ("id" in msg.data) {
             if (msg.data.id == ThreadEventKey.ObjectUpdate) {
                 this._objects = msg.data.objects;
+
+
+                // this._objects.forEach(x => {
+                    
+                //     if (x.id == 95034) {
+
+                //     }
+                // });
+
             }
         }
     }

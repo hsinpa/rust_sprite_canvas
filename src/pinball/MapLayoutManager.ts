@@ -105,7 +105,7 @@ export default class MapLayoutManager {
             
             //Rotation
             sprite.anchor.set(spriteStruct.pivot_x, 1-spriteStruct.pivot_y);
-            sprite.rotation = -singleLayout.rotation;
+            sprite.rotation = singleLayout.rotation;
 
             this._sprite_dict.setValue(singleLayout.id, sprite);
 

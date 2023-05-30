@@ -1,5 +1,5 @@
 import {PhysicsInterface, PositionTransformation} from './PhysicsInterface';
-import { PhysicsTransform, PhysicsConstraint } from "../utility/pinball_types";
+import { PhysicsTransform } from "../utility/pinball_types";
 import { ColliderStruct, SpriteLayoutStruct, OvalCollision } from "../utility/unity_sprite_struct";
 import { IntVector2,  } from "../../utility/UniversalType";
 import { PinballLayer } from '../utility/pinball_static';
@@ -11,14 +11,13 @@ import {ConvertSphereToPoint} from './PhysicsHelper'
 
 export default class OvalComponent extends PhysicsInterface {
     private _ovalCollision: OvalCollision;
-    private _constraint : PhysicsConstraint;
     private _rotationMatrix: Matrix;
     private _sphere_a: Point;
     private _sphere_b: Point;
 
 
-    constructor(id: number, tag: number, base_unit: number) {
-        super(id, tag, base_unit);
+    constructor(id: number, tag: number, inverse: number, base_unit: number) {
+        super(id, tag, inverse, base_unit);
         this._rotationMatrix = new Matrix();
         this._sphere_a = new Point();
         this._sphere_b = new Point();
