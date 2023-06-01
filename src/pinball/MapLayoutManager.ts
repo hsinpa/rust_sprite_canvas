@@ -95,9 +95,8 @@ export default class MapLayoutManager {
             sprite.transform.position.y = point.y;
             
             sprite_layout.spriteLayoutStructs[i].x = point.x;
-            sprite_layout.spriteLayoutStructs[i].y = point.y;
+            sprite_layout.spriteLayoutStructs[i].y = sprite_layout.screen_height - point.y;
 
-            
             //Scale
             this.convert_scale(singleLayout.scale_x * singleLayout.flip_x, sprite_layout.frame_width, this._width);
             sprite.transform.scale.set( singleLayout.scale_x * singleLayout.flip_x, 

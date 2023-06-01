@@ -34,6 +34,7 @@ export function parse_collection_opt(layout: SceneLayoutStruct, callback: (sprit
         let physicsInterface = parse_collision_data(spriteStruct, base_width);
 
         if (physicsInterface == null) continue;
+
         physicsInterface.set_transform({
             velocity: zero_vector, acceleration: zero_vector,
             id: spriteStruct.id, rotation: spriteStruct.rotation,

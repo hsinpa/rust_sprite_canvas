@@ -4,6 +4,11 @@ import { SphereCollision } from "../utility/unity_sprite_struct";
 import { IntVector2 } from "../../utility/UniversalType";
 import { VectorSubstract, VectorDot, Clamp, VectorNumScale, VectorAdd} from "../../utility/UtilityMethod";
 
+export interface ClosestPointStruct {
+    point: IntVector2,
+    t: number,
+}
+
 export function NormalizeSphereCollider(sphereCollision: SphereCollision, baseUnit: number) {
     sphereCollision.x *= baseUnit;
     sphereCollision.y *= baseUnit;
@@ -13,7 +18,7 @@ export function NormalizeSphereCollider(sphereCollision: SphereCollision, baseUn
 }
 
 export function ConvertSphereToPoint(sphereCollision: SphereCollision, transform: PhysicsTransform, sourcePoint: Point, sourceMatrix: Matrix) {
-    let rotationMatrix = sourceMatrix.identity().rotate(transform.rotation);
+    let rotationMatrix = sourceMatrix.identity().rotate(-transform.rotation);
 
     sourcePoint = sourcePoint.set(sphereCollision.x, sphereCollision.y);
 
@@ -25,12 +30,12 @@ export function ConvertSphereToPoint(sphereCollision: SphereCollision, transform
     return sourcePoint;
 }
 
-export function closestPointOnSegment(point: IntVector2, a : IntVector2, b : IntVector2) {
+export function closestPointOnSegment(point: IntVector2, a : IntVector2, b : IntVector2) : ClosestPointStruct {
     let ab = VectorSubstract(b, a);
     let t = VectorDot(ab, ab);
         t = (VectorDot(point, ab) - VectorDot(a, ab)) / t;
         t = Clamp(t, 0 , 1);
 
     let offset = VectorNumScale(ab, t);
-    return VectorAdd(a, offset);
+    return {point: VectorAdd(a, offset), t: t};
 }

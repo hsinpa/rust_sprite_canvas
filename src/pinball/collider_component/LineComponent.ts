@@ -28,20 +28,20 @@ export default class LineComponent extends PhysicsInterface {
         this._lineCollision.point_b.y = new_point_b.y * this._base_unit;
     }
 
-    render_collider(graphics: Graphics): void {
+    render_collider(graphics: Graphics, screen_height: number): void {
         let point_a : IntVector2 = {x: this._lineCollision.point_a.x, y: this._lineCollision.point_a.y};
         let point_b : IntVector2 = {x: this._lineCollision.point_b.x, y: this._lineCollision.point_b.y };
 
         let subtraction = VectorSubstract(point_a, point_b);
         let normal = PerpendicularClockwise(Normalize2D(subtraction));
         let center_x = Lerp(point_a.x, point_b.x, 0.5) + this._transform.position.x;
-        let center_y = Lerp(point_a.y, point_b.y, 0.5) + this._transform.position.y;
+        let center_y =  screen_height - (Lerp(point_a.y, point_b.y, 0.5) + this._transform.position.y);
         let normalDist = VectorDistance(point_a, point_b) * 0.2;
 
         let thickness = 2;
         graphics.lineStyle(thickness, 0xffffff)
-        .moveTo(this._transform.position.x  + this._lineCollision.point_a.x, this._transform.position.y + this._lineCollision.point_a.y)
-        .lineTo(this._transform.position.x  + this._lineCollision.point_b.x, this._transform.position.y + this._lineCollision.point_b.y).endFill();
+        .moveTo(this._transform.position.x  + this._lineCollision.point_a.x, screen_height -  this._transform.position.y + this._lineCollision.point_a.y)
+        .lineTo(this._transform.position.x  + this._lineCollision.point_b.x, screen_height - this._transform.position.y + this._lineCollision.point_b.y).endFill();
 
         graphics.lineStyle(thickness, 0xd91ed3)
         .moveTo(center_x, center_y)

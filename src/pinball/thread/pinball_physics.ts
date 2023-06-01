@@ -100,12 +100,10 @@ export class PinballPhysics {
             //Translation
             if (physicsInterface.Tag == PinballLayer.Ball && physicsInterface.Transform.velocity != undefined) {
                 let convert_position = physicsInterface.Transform.position;
-                    convert_position.y = this._world_struct.screen_height - convert_position.y;
 
                 let acceleration = gravity;
                 let velocity = VectorAdd(physicsInterface.Transform.velocity, (VectorNumScale(acceleration, delta_time)));
                 let position = VectorAdd(convert_position, (VectorNumScale(velocity, delta_time)));
-                position.y = this._world_struct.screen_height - position.y;
 
                 physicsInterface.Transform.velocity = velocity;
                 physicsInterface.Transform.position = position;    

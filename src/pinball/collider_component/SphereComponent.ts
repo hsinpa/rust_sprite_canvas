@@ -32,7 +32,7 @@ export default class SphereComponent extends PhysicsInterface {
         
         graphics.lineStyle(0);
         graphics.beginFill(0x8FD5FF, 0.5);
-        graphics.drawCircle(position_x, position_y, this._sphereCollision.radius);
+        graphics.drawCircle(position_x, screen_height - position_y, this._sphereCollision.radius);
         graphics.endFill();
     }
 }
