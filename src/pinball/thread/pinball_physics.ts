@@ -8,6 +8,7 @@ import { PhysicsInterface } from "../collider_component/PhysicsInterface";
 import { ObjectInterface } from "../object_component/ObjectInterface";
 import { parse_collection_opt } from "../collider_component/PhysicsVisualizeTool";
 import { IntVector2 } from "../../utility/UniversalType";
+import { Vector2 } from "../../utility/VectorMath";
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
@@ -16,7 +17,8 @@ export class PinballPhysics {
 
     public physics_tags : Dictionary<number, number[]> = new Dictionary();
 
-    public get simulated_object() { return this._physics_transform; } 
+    public get simulated_object() { return this._physics_transform; }
+    private _world_acceleration = new Vector2(0, -200);
 
     set_constraint(data : SceneLayoutStruct) {
         this._world_struct = data;
@@ -45,6 +47,12 @@ export class PinballPhysics {
         //Left Flipper
         let l_flippers = this.physics_tags.getValue(PinballLayer.Flipper_Left);
         l_flippers.forEach(x => {
+            this.physics_components.getValue(x).handle_collision(ball_object);
+        });
+
+        //Right Flipper
+        let r_flippers = this.physics_tags.getValue(PinballLayer.Flipper_Right);
+        r_flippers.forEach(x => {
             this.physics_components.getValue(x).handle_collision(ball_object);
         });
     }
@@ -81,33 +89,31 @@ export class PinballPhysics {
     simulate(delta_time: number) {
         
         let index = 0;
-        let gravity : IntVector2= {x: 0, y : -100};
-
+        let decay = 0.998;
         this.physics_components.forEach((id, physicsInterface) => {
-
+            if (physicsInterface.Tag != PinballLayer.Ball) return;
             //Rotation
-            if (physicsInterface.Transform.angular != undefined) {
-                let rotation = physicsInterface.Transform.rotation + (physicsInterface.Transform.angular * delta_time * physicsInterface.Inverse);
+            // if (physicsInterface.Transform.angular != undefined) {
+            //     let rotation = physicsInterface.Transform.rotation + (physicsInterface.Transform.angular * delta_time * physicsInterface.Inverse);
                 
-                if (physicsInterface.Constraint != undefined && physicsInterface.Constraint.max_rotation != undefined && physicsInterface.Constraint.min_rotation != undefined ) {
+            //     if (physicsInterface.Constraint != undefined && physicsInterface.Constraint.max_rotation != undefined && physicsInterface.Constraint.min_rotation != undefined ) {
 
-                    rotation = Clamp(rotation, physicsInterface.Constraint.min_rotation, physicsInterface.Constraint.max_rotation);
-                }
+            //         rotation = Clamp(rotation, physicsInterface.Constraint.min_rotation, physicsInterface.Constraint.max_rotation);
+            //     }
             
-                physicsInterface.Transform.rotation = rotation;
-            }
+            //     physicsInterface.Transform.rotation = rotation;
+            // }
 
             //Translation
             if (physicsInterface.Tag == PinballLayer.Ball && physicsInterface.Transform.velocity != undefined) {
-                let convert_position = physicsInterface.Transform.position;
+                let acceleration = physicsInterface.Transform.acceleration;
+                    acceleration.set(this._world_acceleration.x, this._world_acceleration.y);                    
 
-                let acceleration = gravity;
-                let velocity = VectorAdd(physicsInterface.Transform.velocity, (VectorNumScale(acceleration, delta_time)));
-                let position = VectorAdd(convert_position, (VectorNumScale(velocity, delta_time)));
 
-                physicsInterface.Transform.velocity = velocity;
-                physicsInterface.Transform.position = position;    
-
+                physicsInterface.Transform.velocity.scale(decay);
+                physicsInterface.Transform.velocity.add(acceleration, delta_time);
+                physicsInterface.Transform.position.add(physicsInterface.Transform.velocity, delta_time);                
+                
                 this.world_object_collision(physicsInterface.Transform);
                 this.world_boundary_collision(physicsInterface.Transform);
 

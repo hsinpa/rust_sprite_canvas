@@ -1,4 +1,5 @@
 import { ButtonState } from '../../utility/Input/InputHandler';
+import { Vector2 } from '../../utility/VectorMath';
 import {PhysicsTransform} from '../utility/pinball_types';
 import { SceneLayoutStruct } from '../utility/unity_sprite_struct';
 
@@ -16,7 +17,8 @@ export interface ThreadEventInterface {
 }
 
 export interface WorldConstructStruct extends ThreadEventInterface {
-    scene_layout: SceneLayoutStruct
+    scene_layout: SceneLayoutStruct,
+    vector: Vector2
 }
 
 export interface ObjectPushStruct extends ThreadEventInterface {

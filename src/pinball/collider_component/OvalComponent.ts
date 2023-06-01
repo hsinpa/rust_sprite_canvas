@@ -4,10 +4,10 @@ import { ColliderStruct, SpriteLayoutStruct, OvalCollision } from "../utility/un
 import { IntVector2,  } from "../../utility/UniversalType";
 import { PinballLayer } from '../utility/pinball_static';
 
-import { PerpendicularClockwise, VectorSubstract, Normalize2D, VectorNumScale, Lerp } from "../../utility/UtilityMethod";
+import { PerpendicularClockwise, VectorSubstract, Normalize2D, VectorNumScale, Lerp, VectorDistance } from "../../utility/UtilityMethod";
 
 import { Graphics, Matrix, Point } from 'pixi.js';
-import {ConvertSphereToPoint, NormalizeSphereCollider, closestPointOnSegment} from './PhysicsHelper'
+import {ConvertSphereToVector, NormalizeSphereCollider, closestPointOnSegment} from './PhysicsHelper'
 import { Vector2 } from '../../utility/VectorMath';
 
 export default class OvalComponent extends PhysicsInterface {
@@ -16,6 +16,9 @@ export default class OvalComponent extends PhysicsInterface {
 
     private _sphere_a: Point;
     private _sphere_b: Point;
+
+    private _dir_vector: Vector2;
+    private _velocity_vector: Vector2;
 
     private _a_vector: Vector2;
     private _b_vector: Vector2;
@@ -28,18 +31,52 @@ export default class OvalComponent extends PhysicsInterface {
         this._sphere_b = new Point();
         this._a_vector = new Vector2();
         this._b_vector = new Vector2();
-    }   
+        this._dir_vector = new Vector2();
+        this._velocity_vector = new Vector2();
+    }  
+
 
     handle_collision(physicsObject: PhysicsTransform): void {
         if (physicsObject.radius == undefined) return;
 
-        this._sphere_a = ConvertSphereToPoint(this._ovalCollision.sphere_a, this._transform, this._sphere_a, this._rotationMatrix);
-        this._sphere_b = ConvertSphereToPoint(this._ovalCollision.sphere_b, this._transform, this._sphere_b, this._rotationMatrix);
+        ConvertSphereToVector(this._ovalCollision.sphere_a, this._transform, this._a_vector, this._rotationMatrix);
+        ConvertSphereToVector(this._ovalCollision.sphere_b, this._transform, this._b_vector, this._rotationMatrix);
 
-        let closestStruct = closestPointOnSegment(physicsObject.position, {x: this._sphere_a.x , y: this._sphere_a.y}, {x: this._sphere_b.x , y: this._sphere_b.y});
+        let closestStruct = closestPointOnSegment(physicsObject.position,  this._a_vector, this._b_vector, this._velocity_vector);
         let lerp_radius = Lerp(this._ovalCollision.sphere_a.radius, this._ovalCollision.sphere_b.radius, closestStruct.t);
+        let distance = VectorDistance(closestStruct.point, physicsObject.position);
+        let nativeDir = VectorSubstract(physicsObject.position, closestStruct.point);
 
+        this._dir_vector.set(nativeDir.x, nativeDir.y);
 
+        //Out of reach
+        if (distance == 0 || distance > physicsObject.radius + lerp_radius) return;
+
+        //Normalize direction
+        this._dir_vector.scale(1 / distance);
+
+        //Position
+        let corr = (physicsObject.radius + lerp_radius - distance);
+        physicsObject.position.add(this._dir_vector, corr);
+
+        //Velocity
+        let radius = this._velocity_vector;
+        radius.add(this._dir_vector, lerp_radius);
+        radius.substract(this._a_vector);
+
+        let surfaceVel = Vector2.perpendicular(radius, radius);
+        surfaceVel.scale(this.Transform.angular);
+
+        let v = Vector2.dot(physicsObject.velocity, this._dir_vector);
+        let vnew = Vector2.dot(surfaceVel, this._dir_vector);
+
+        console.log(this._dir_vector);
+
+        let origin_power = physicsObject.velocity.length() * 0.1;
+        physicsObject.velocity.set(this._dir_vector.x, this._dir_vector.y);
+        physicsObject.velocity.scale(origin_power);
+
+        physicsObject.velocity.add(this._dir_vector, (vnew - v));
     }
 
     parse_properties_struct(properties_data: string): void {
@@ -47,6 +84,9 @@ export default class OvalComponent extends PhysicsInterface {
     }
 
     render_collider(graphics: Graphics, screen_height: number): void {
+        this._sphere_a.set(this._a_vector.x, this._a_vector.y);
+        this._sphere_b.set(this._b_vector.x, this._b_vector.y);
+
         graphics.lineStyle(0);
         graphics.beginFill(0x8FD5FF, 0.5);
         graphics.drawCircle(this._sphere_a.x, screen_height - this._sphere_a.y, this._ovalCollision.sphere_a.radius);
@@ -82,7 +122,7 @@ export default class OvalComponent extends PhysicsInterface {
         this._ovalCollision.sphere_a = NormalizeSphereCollider(this._ovalCollision.sphere_a, this._base_unit);
         this._ovalCollision.sphere_b = NormalizeSphereCollider(this._ovalCollision.sphere_b, this._base_unit);
 
-        this._sphere_a = ConvertSphereToPoint(this._ovalCollision.sphere_a, this._transform, this._sphere_a, this._rotationMatrix);
-        this._sphere_b = ConvertSphereToPoint(this._ovalCollision.sphere_b, this._transform, this._sphere_b, this._rotationMatrix);
+        ConvertSphereToVector(this._ovalCollision.sphere_a, this._transform, this._a_vector, this._rotationMatrix);
+        ConvertSphereToVector(this._ovalCollision.sphere_b, this._transform, this._b_vector, this._rotationMatrix);
     }
 }

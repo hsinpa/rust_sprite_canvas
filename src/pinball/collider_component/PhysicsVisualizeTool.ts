@@ -6,6 +6,7 @@ import { PhysicsInterface } from "./PhysicsInterface";
 import RectComponent from "./RectComponent";
 import SphereComponent from "./SphereComponent";
 import { IntVector2 } from "../../utility/UniversalType";
+import { Vector2 } from "../../utility/VectorMath";
 
 export function parse_collision_data(spriteLayoutStructs : SpriteLayoutStruct, base_unit : number) : PhysicsInterface {
     if (spriteLayoutStructs.collisionStruct == null || spriteLayoutStructs.collisionStruct.data == "") return;
@@ -36,9 +37,9 @@ export function parse_collection_opt(layout: SceneLayoutStruct, callback: (sprit
         if (physicsInterface == null) continue;
 
         physicsInterface.set_transform({
-            velocity: zero_vector, acceleration: zero_vector,
+            velocity: new Vector2(), acceleration: new Vector2(), angular: 0,
             id: spriteStruct.id, rotation: spriteStruct.rotation,
-            position: {x: spriteStruct.x, y: spriteStruct.y }, scale: {x: spriteStruct.scale_x, y: spriteStruct.scale_y}
+            position: new Vector2(spriteStruct.x, spriteStruct.y), scale: new Vector2(spriteStruct.scale_x, spriteStruct.scale_y)
             
         }, spriteStruct.constraintStruct);
 

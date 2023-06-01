@@ -4,6 +4,7 @@ import { InputStruct } from "./pinball_thread_event";
 import { ButtonStatus } from "../../utility/Input/InputHandler";
 import { PinballPhysics } from "./pinball_physics";
 import { PinballLayer } from "../utility/pinball_static";
+import { Clamp } from "../../utility/UtilityMethod";
 
 export class SimulationState {
  
@@ -33,11 +34,11 @@ export class SimulationState {
 
     perform_presimulation_stage(delta_time: number) {
         //Handle Flipper
-        this.handle_flipper(PinballLayer.Flipper_Left, InputEventTitle.z);
-        this.handle_flipper(PinballLayer.Flipper_Right, InputEventTitle.l_slash);
+        this.handle_flipper(PinballLayer.Flipper_Left, InputEventTitle.z, delta_time);
+        this.handle_flipper(PinballLayer.Flipper_Right, InputEventTitle.l_slash, delta_time);
     }
 
-    private handle_flipper(tag: number, state_id: string) {
+    private handle_flipper(tag: number, state_id: string, delta_time: number) {
         let tags = this._pinball_physics.physics_tags.getValue(tag);
         let state = this._input_state_table.getValue(state_id);
 
@@ -51,7 +52,14 @@ export class SimulationState {
             
             if (physicsComp === undefined) continue;
 
-            physicsComp.Transform.angular = flipper_normalize * flipper_strength;
+            let previous_rotation = physicsComp.Transform.rotation;
+            let angular = flipper_normalize * flipper_strength;
+
+            let rotation = previous_rotation + (angular * delta_time * physicsComp.Inverse);
+                rotation = Clamp(rotation, physicsComp.Constraint.min_rotation, physicsComp.Constraint.max_rotation);
+            
+                physicsComp.Transform.rotation = rotation;
+                physicsComp.Transform.angular = (rotation - previous_rotation) / delta_time;
         }
     }
 }

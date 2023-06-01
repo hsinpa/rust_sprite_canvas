@@ -5,8 +5,9 @@ export class Vector2 {
     x: number = 0;
     y: number = 0;
 
-    constructor() {
-        return new Vector2();
+    constructor(x = 0, y = 0) {
+        this.x = x;
+        this.y = y;
     }
 
     public set(x: number, y: number) {
@@ -27,16 +28,16 @@ export class Vector2 {
         return this;
     }
 
-    public add(vec: Vector2) {
-        this.x += vec.x;
-        this.y += vec.y;
+    public add(vec: Vector2, scale = 1) {
+        this.x += vec.x * scale;
+        this.y += vec.y * scale;
 
         return this;
     }
 
-    public substract(vec: Vector2) {
-        this.x -= vec.x;
-        this.y -= vec.y;
+    public substract(vec: Vector2, scale = 1) {
+        this.x -= vec.x * scale;
+        this.y -= vec.y * scale;
 
         return this;
     }
@@ -67,9 +68,23 @@ export class Vector2 {
 
         return this;        
     }
+
+    public zero() {
+        this.x = 0;
+        this.y = 0;
+
+        return this;
+    }
+
+    public one() {
+        this.x = 1;
+        this.y = 1;
+
+        return this;
+    }
     //#region  Global Static
 
-    public static PerpendicularClockwise(vector: Vector2, source? : Vector2) : Vector2
+    public static perpendicular(vector: Vector2, source? : Vector2) : Vector2
     {
         if (source == undefined) {
             source = new Vector2();
@@ -94,7 +109,7 @@ export class Vector2 {
         return Math.sqrt(Math.pow(vec_b.x - vec_a.x, 2) + Math.pow(vec_b.y - vec_a.y, 2));
     }
 
-    public static normalize2D(vector : Vector2) : Vector2 {
+    public static normalize(vector : Vector2) : Vector2 {
         let vi = Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2));
         return this.from_value(vector.x / vi, vector.y / vi );
     }
@@ -103,7 +118,7 @@ export class Vector2 {
         return (vec_a.x * vec_b.x) + (vec_a.y * vec_b.y);
     }
 
-    public lerp(vec_a: Vector2, vec_b: Vector2, t: number, source?: Vector2) {
+    public static lerp(vec_a: Vector2, vec_b: Vector2, t: number, source?: Vector2) {
         if (source == undefined) source = new Vector2();
 
         source.set(
@@ -113,6 +128,25 @@ export class Vector2 {
         
         return source;
     }
+
+    public static add(a: Vector2, b: Vector2, source?: Vector2) {
+        if (source == undefined) source = new Vector2();
+
+        return source.set(
+            a.x + b.x,
+            a.y + b.y
+        );
+    }
+
+    public static substract(a: Vector2, b: Vector2, source?: Vector2) {
+        if (source == undefined) source = new Vector2();
+
+        return source.set(
+            a.x - b.x,
+            a.y - b.y
+        );
+    }
+
     //#endregion
 
 }

@@ -32,7 +32,6 @@ class PinballThread {
         console.log("on_world_construct_event");
 
         const data : WorldConstructStruct = msg.data;
-
         this._physicsEngine.set_constraint(data.scene_layout);
     }
 

@@ -12,6 +12,7 @@ import InputHandler, { ButtonState } from "../utility/Input/InputHandler";
 import { InputEventTitle} from "../utility/Input/KeycodeTable";
 import { PhysicsVisualizeTool } from "./collider_component/PhysicsVisualizeTool";
 import { PhysicsInterface } from "./collider_component/PhysicsInterface";
+import { Vector2 } from "../utility/VectorMath";
 
 export class PinballManager {
 
@@ -30,6 +31,7 @@ export class PinballManager {
     private _physics_worker: Worker;
     private _woker_ready_flag: boolean = false;
     private _objects: PhysicsTransform[] = [];
+    private _cache_vector : Vector2 = new Vector2(5, 23);
 
     constructor(query: string) {
         this._pixi_dom = document.querySelector(query);
@@ -70,7 +72,7 @@ export class PinballManager {
         this._visualizer = new PhysicsVisualizeTool(sceneLayout);
         this._visualizer.visualize();
 
-        this._physics_worker.postMessage({id: ThreadEventKey.WorldConstruct, scene_layout: sceneLayout });
+        this._physics_worker.postMessage({id: ThreadEventKey.WorldConstruct, scene_layout: sceneLayout, vector : this._cache_vector });
         // this._physics_worker.postMessage({id: ThreadEventKey.ObjectPush, 
         //                                         spheres: [] });
 

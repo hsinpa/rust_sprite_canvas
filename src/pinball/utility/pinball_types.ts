@@ -1,14 +1,15 @@
 import { vec2 } from "gl-matrix";
 import { IntVector2 } from "../../utility/UniversalType";
+import { Vector2 } from "../../utility/VectorMath";
 
 export interface PhysicsTransform {
     id : number,
-    position: IntVector2,
-    scale: IntVector2,
+    position: Vector2,
+    scale: Vector2,
     rotation: number,
 
-    velocity?: IntVector2,
-    acceleration?: IntVector2,
+    velocity?: Vector2,
+    acceleration?: Vector2,
     angular?: number,
     radius?: number,
 }
