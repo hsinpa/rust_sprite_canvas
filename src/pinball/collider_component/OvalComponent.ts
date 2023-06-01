@@ -22,6 +22,7 @@ export default class OvalComponent extends PhysicsInterface {
 
     private _a_vector: Vector2;
     private _b_vector: Vector2;
+    private _reflection_vector: Vector2;
 
 
     constructor(id: number, tag: number, inverse: number, base_unit: number) {
@@ -33,6 +34,7 @@ export default class OvalComponent extends PhysicsInterface {
         this._b_vector = new Vector2();
         this._dir_vector = new Vector2();
         this._velocity_vector = new Vector2();
+        this._reflection_vector = new Vector2();
     }  
 
 
@@ -46,6 +48,9 @@ export default class OvalComponent extends PhysicsInterface {
         let lerp_radius = Lerp(this._ovalCollision.sphere_a.radius, this._ovalCollision.sphere_b.radius, closestStruct.t);
         let distance = VectorDistance(closestStruct.point, physicsObject.position);
         let nativeDir = VectorSubstract(physicsObject.position, closestStruct.point);
+        let flipperDir = Vector2.substract(this._a_vector, this._b_vector);
+            flipperDir.normalize();
+            flipperDir = Vector2.perpendicular(flipperDir, flipperDir);
 
         this._dir_vector.set(nativeDir.x, nativeDir.y);
 
@@ -60,23 +65,30 @@ export default class OvalComponent extends PhysicsInterface {
         physicsObject.position.add(this._dir_vector, corr);
 
         //Velocity
+        let reverse_ball_velocity_nor = physicsObject.velocity.clone().scale(-1).normalize();
+
         let radius = this._velocity_vector;
         radius.add(this._dir_vector, lerp_radius);
         radius.substract(this._a_vector);
 
         let surfaceVel = Vector2.perpendicular(radius, radius);
+        let surfaceVelNormal = Vector2.normalize(surfaceVel);
+
+        Vector2.reflect(flipperDir, reverse_ball_velocity_nor, this._reflection_vector);
+        //console.log(reverse_ball_velocity_nor, flipperDir);
+
         surfaceVel.scale(this.Transform.angular);
 
         let v = Vector2.dot(physicsObject.velocity, this._dir_vector);
         let vnew = Vector2.dot(surfaceVel, this._dir_vector);
 
-        console.log(this._dir_vector);
 
-        let origin_power = physicsObject.velocity.length() * 0.1;
-        physicsObject.velocity.set(this._dir_vector.x, this._dir_vector.y);
-        physicsObject.velocity.scale(origin_power);
+        let origin_power = physicsObject.velocity.length() * 0.7;
+        // physicsObject.velocity.set(this._reflection_vector.x, this._reflection_vector.y);
+        // physicsObject.velocity.scale(origin_power);
+        console.log(v);
 
-        physicsObject.velocity.add(this._dir_vector, (vnew - v));
+        physicsObject.velocity.add(this._dir_vector, (vnew - v) * 0.9);
     }
 
     parse_properties_struct(properties_data: string): void {

@@ -60,27 +60,32 @@ export class PinballPhysics {
     world_boundary_collision(ball_object: PhysicsTransform) {
         if (ball_object.radius == undefined) return ball_object;
 
+        let decay = 0.7;
         //Left
         if (ball_object.position.x < ball_object.radius) {
             ball_object.position.x = ball_object.radius;
             ball_object.velocity.x = -ball_object.velocity.x;
+            ball_object.velocity.x *= decay;
         }
 
         //Right
         if (ball_object.position.x > this._world_struct.screen_width - ball_object.radius) {
             ball_object.position.x = this._world_struct.screen_width - ball_object.radius;
             ball_object.velocity.x = -ball_object.velocity.x;
+            ball_object.velocity.x *= decay;
         }
 
         //Bottom
         if (ball_object.position.y < ball_object.radius) {
             ball_object.position.y = ball_object.radius;
             ball_object.velocity.y = -ball_object.velocity.y;
+            ball_object.velocity.y *= decay;
         }
 
         if (ball_object.position.y > this._world_struct.screen_height - ball_object.radius) {
             ball_object.position.y = this._world_struct.screen_height - ball_object.radius;
             ball_object.velocity.y = -ball_object.velocity.y;
+            ball_object.velocity.y *= decay;
         }
 
         return ball_object;

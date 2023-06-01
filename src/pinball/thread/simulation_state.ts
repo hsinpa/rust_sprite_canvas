@@ -44,8 +44,7 @@ export class SimulationState {
 
         if (tags === undefined || state === undefined) return;
         let tagLens = tags.length;
-        
-        const flipper_strength = 20;
+        const flipper_strength = 15;
         const flipper_normalize = (state * 2) - 1; // Normalize to -1 and 1
         for (let i = tagLens - 1; i >= 0; i--) {
             let physicsComp = this._pinball_physics.physics_components.getValue(tags[i]);

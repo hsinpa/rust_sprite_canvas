@@ -21,6 +21,10 @@ export class Vector2 {
         return {x: this.x, y: this.y}
     }
 
+    public clone(){
+        return new Vector2(this.x, this.y);
+    }
+
     public scale(value: number) {
         this.x *= value;
         this.y *= value;
@@ -147,6 +151,29 @@ export class Vector2 {
         );
     }
 
+    
+    /**
+     * The Input should be normalized
+     *
+     * @static
+     * @param {Vector2} surface_normal
+     * @param {Vector2} direction
+     * @param {Vector2} [source]
+     * @return {*} 
+     * @memberof Vector2
+     */
+    public static reflect(surface_normal: Vector2, direction: Vector2, source?: Vector2) {
+        if (source == undefined) source = new Vector2();
+
+        source.set(surface_normal.x, surface_normal.y);
+        let t = this.dot(surface_normal, direction);
+        source.scale(t);
+        source.scale(2);
+
+        this.substract(source, direction, source);
+
+        return source;
+    }
     //#endregion
 
 }
