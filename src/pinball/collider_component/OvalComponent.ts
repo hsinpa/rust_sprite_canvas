@@ -47,15 +47,20 @@ export default class OvalComponent extends PhysicsInterface {
         let closestStruct = closestPointOnSegment(physicsObject.position,  this._a_vector, this._b_vector, this._velocity_vector);
         let lerp_radius = Lerp(this._ovalCollision.sphere_a.radius, this._ovalCollision.sphere_b.radius, closestStruct.t);
         let distance = VectorDistance(closestStruct.point, physicsObject.position);
-        let nativeDir = VectorSubstract(physicsObject.position, closestStruct.point);
+        this._dir_vector = Vector2.substract(physicsObject.position, closestStruct.point, this._dir_vector);
+        let nativeDirNormal = Vector2.normalize(this._dir_vector);
+
         let flipperDir = Vector2.substract(this._a_vector, this._b_vector);
             flipperDir.normalize();
             flipperDir = Vector2.perpendicular(flipperDir, flipperDir);
 
-        this._dir_vector.set(nativeDir.x, nativeDir.y);
 
         //Out of reach
         if (distance == 0 || distance > physicsObject.radius + lerp_radius) return;
+
+        let sphere_a_distance = VectorDistance(this._a_vector, physicsObject.position);
+        let sphere_b_distance = VectorDistance(this._b_vector, physicsObject.position);
+
 
         //Normalize direction
         this._dir_vector.scale(1 / distance);
@@ -74,7 +79,16 @@ export default class OvalComponent extends PhysicsInterface {
         let surfaceVel = Vector2.perpendicular(radius, radius);
         let surfaceVelNormal = Vector2.normalize(surfaceVel);
 
-        Vector2.reflect(flipperDir, reverse_ball_velocity_nor, this._reflection_vector);
+        //Reflection
+        //If hit on sphere part        
+        if (sphere_a_distance < physicsObject.radius + this._ovalCollision.sphere_a.radius ||
+            sphere_b_distance < physicsObject.radius + this._ovalCollision.sphere_b.radius ) {
+                Vector2.reflect(nativeDirNormal, reverse_ball_velocity_nor, this._reflection_vector);
+            } else {
+                Vector2.reflect(flipperDir, reverse_ball_velocity_nor, this._reflection_vector);
+            }
+
+
         //console.log(reverse_ball_velocity_nor, flipperDir);
 
         surfaceVel.scale(this.Transform.angular);
@@ -82,13 +96,32 @@ export default class OvalComponent extends PhysicsInterface {
         let v = Vector2.dot(physicsObject.velocity, this._dir_vector);
         let vnew = Vector2.dot(surfaceVel, this._dir_vector);
 
-
         let origin_power = physicsObject.velocity.length() * 0.7;
-        // physicsObject.velocity.set(this._reflection_vector.x, this._reflection_vector.y);
-        // physicsObject.velocity.scale(origin_power);
-        console.log(v);
+        this._reflection_vector.scale(origin_power);
 
-        physicsObject.velocity.add(this._dir_vector, (vnew - v) * 0.9);
+        this._dir_vector.scale((vnew - v) * 0.9);
+        this._dir_vector.add(physicsObject.velocity);
+        //this._dir_vector.add(this._reflection_vector);
+        if (this.Transform.angular > 0.1 || this.Transform.angular < -0.1) {
+            physicsObject.velocity.set(this._dir_vector.x, this._dir_vector.y);
+        } else {
+            physicsObject.velocity.set(this._reflection_vector.x, this._reflection_vector.y);
+        }
+
+        //this._reflection_vector.add(this._dir_vector, (vnew - v) * 0.9);
+
+        let correlation = Vector2.dot(this._dir_vector, this._reflection_vector);
+
+ 
+
+        //console.log(correlation)
+
+        //if (correlation > 0.2) {
+        // } else {
+        //     let origin_power = physicsObject.velocity.length() * 0.7;
+        //     physicsObject.velocity.set(this._reflection_vector.x, this._reflection_vector.y);
+        //     physicsObject.velocity.scale(origin_power);
+        // }
     }
 
     parse_properties_struct(properties_data: string): void {

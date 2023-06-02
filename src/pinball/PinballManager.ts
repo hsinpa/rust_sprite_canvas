@@ -66,8 +66,8 @@ export class PinballManager {
         this._pixi_app = new Application({ width: sceneLayout.screen_width, height: sceneLayout.screen_height, background: '#83a32c' });
         this._pixi_dom.appendChild<any>(this._pixi_app.view);
 
-
         this._mapLayoutManager.render_map(sceneLayout, this._pixi_app.stage);
+        this._mapLayoutManager.auto_resize_canvas();
 
         this._visualizer = new PhysicsVisualizeTool(sceneLayout);
         this._visualizer.visualize();

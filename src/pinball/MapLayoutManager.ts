@@ -53,7 +53,7 @@ export default class MapLayoutManager {
         return this._pinball_sprite_struct;
     }
 
-    private auto_resize_canvas() {
+    public auto_resize_canvas() {
         if (this._canvas_dom == null) 
             this._canvas_dom = document.getElementsByTagName("canvas")[0];
 
