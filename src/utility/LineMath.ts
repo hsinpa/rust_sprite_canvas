@@ -1,6 +1,6 @@
 import { Vector2 } from "./VectorMath";
 
-export function onSegment(p: Vector2, q: Vector2, r: Vector2) : boolean
+function onSegment(p: Vector2, q: Vector2, r: Vector2) : boolean
 {
     if (q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) &&
         q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y))
@@ -14,7 +14,7 @@ export function onSegment(p: Vector2, q: Vector2, r: Vector2) : boolean
 // 0 --> p, q and r are colinear 
 // 1 --> Clockwise 
 // 2 --> Counterclockwise 
-export function orientation(p: Vector2, q : Vector2, r: Vector2) : number
+function orientation(p: Vector2, q : Vector2, r: Vector2) : number
 {
     // See https://www.geeksforgeeks.org/orientation-3-ordered-points/ 
     // for details of below formula. 
