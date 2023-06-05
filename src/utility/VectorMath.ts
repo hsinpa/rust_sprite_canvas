@@ -25,6 +25,10 @@ export class Vector2 {
         return new Vector2(this.x, this.y);
     }
 
+    public copy(v: Vector2) {
+        return this.set(v.x, v.y);
+    }
+
     public scale(value: number) {
         this.x *= value;
         this.y *= value;
@@ -174,6 +178,9 @@ export class Vector2 {
 
         return source;
     }
+
+
+    
     //#endregion
 
 }

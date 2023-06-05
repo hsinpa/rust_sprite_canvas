@@ -12,4 +12,7 @@ export interface PhysicsTransform {
     acceleration?: Vector2,
     angular?: number,
     radius?: number,
+
+    last_position?: Vector2,
+    last_velocity?: Vector2,
 }

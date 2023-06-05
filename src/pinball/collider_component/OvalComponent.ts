@@ -17,7 +17,7 @@ export default class OvalComponent extends PhysicsInterface {
     private _sphere_a: Point;
     private _sphere_b: Point;
 
-    private _dir_vector: Vector2;
+    private _target_direction: Vector2;
     private _velocity_vector: Vector2;
 
     private _a_vector: Vector2;
@@ -32,7 +32,7 @@ export default class OvalComponent extends PhysicsInterface {
         this._sphere_b = new Point();
         this._a_vector = new Vector2();
         this._b_vector = new Vector2();
-        this._dir_vector = new Vector2();
+        this._target_direction = new Vector2();
         this._velocity_vector = new Vector2();
         this._reflection_vector = new Vector2();
     }  
@@ -45,83 +45,62 @@ export default class OvalComponent extends PhysicsInterface {
         ConvertSphereToVector(this._ovalCollision.sphere_b, this._transform, this._b_vector, this._rotationMatrix);
 
         let closestStruct = closestPointOnSegment(physicsObject.position,  this._a_vector, this._b_vector, this._velocity_vector);
-        let lerp_radius = Lerp(this._ovalCollision.sphere_a.radius, this._ovalCollision.sphere_b.radius, closestStruct.t);
-        let distance = VectorDistance(closestStruct.point, physicsObject.position);
-        this._dir_vector = Vector2.substract(physicsObject.position, closestStruct.point, this._dir_vector);
-        let nativeDirNormal = Vector2.normalize(this._dir_vector);
-
-        let flipperDir = Vector2.substract(this._a_vector, this._b_vector);
-            flipperDir.normalize();
-            flipperDir = Vector2.perpendicular(flipperDir, flipperDir);
-
+        const lerp_radius = Lerp(this._ovalCollision.sphere_a.radius, this._ovalCollision.sphere_b.radius, closestStruct.t);
+        const distance = VectorDistance(closestStruct.point, physicsObject.position);
+        this._target_direction = Vector2.substract(physicsObject.position, closestStruct.point, this._target_direction);
 
         //Out of reach
         if (distance == 0 || distance > physicsObject.radius + lerp_radius) return;
 
-        let sphere_a_distance = VectorDistance(this._a_vector, physicsObject.position);
-        let sphere_b_distance = VectorDistance(this._b_vector, physicsObject.position);
-
+        const sphere_a_distance = VectorDistance(this._a_vector, physicsObject.position);
+        const sphere_b_distance = VectorDistance(this._b_vector, physicsObject.position);
 
         //Normalize direction
-        this._dir_vector.scale(1 / distance);
+        this._target_direction.scale(1 / distance);
+        ///let nativeDirNormal = this._target_direction.clone();
 
         //Position
         let corr = (physicsObject.radius + lerp_radius - distance);
-        physicsObject.position.add(this._dir_vector, corr);
+        physicsObject.position.add(this._target_direction, corr);
 
         //Velocity
         let reverse_ball_velocity_nor = physicsObject.velocity.clone().scale(-1).normalize();
 
-        let radius = this._velocity_vector;
-        radius.add(this._dir_vector, lerp_radius);
-        radius.substract(this._a_vector);
-
-        let surfaceVel = Vector2.perpendicular(radius, radius);
-        let surfaceVelNormal = Vector2.normalize(surfaceVel);
+        let difference_to_pointA = closestStruct.point;
+        difference_to_pointA.add(this._target_direction, lerp_radius);
+        difference_to_pointA.substract(this._a_vector);
 
         //Reflection
+        let flipperDir = Vector2.substract(this._a_vector, this._b_vector);
+        flipperDir.normalize();
+        flipperDir = Vector2.perpendicular(flipperDir, flipperDir);
+
         //If hit on sphere part        
         if (sphere_a_distance < physicsObject.radius + this._ovalCollision.sphere_a.radius ||
             sphere_b_distance < physicsObject.radius + this._ovalCollision.sphere_b.radius ) {
-                Vector2.reflect(nativeDirNormal, reverse_ball_velocity_nor, this._reflection_vector);
+                Vector2.reflect(this._target_direction, reverse_ball_velocity_nor, this._reflection_vector);
             } else {
                 Vector2.reflect(flipperDir, reverse_ball_velocity_nor, this._reflection_vector);
             }
 
 
         //console.log(reverse_ball_velocity_nor, flipperDir);
-
+        let surfaceVel = Vector2.perpendicular(difference_to_pointA, difference_to_pointA);
         surfaceVel.scale(this.Transform.angular);
-
-        let v = Vector2.dot(physicsObject.velocity, this._dir_vector);
-        let vnew = Vector2.dot(surfaceVel, this._dir_vector);
+        let v = Vector2.dot(physicsObject.velocity, this._target_direction);
+        let vnew = Vector2.dot(surfaceVel, this._target_direction);
 
         let origin_power = physicsObject.velocity.length() * 0.7;
         this._reflection_vector.scale(origin_power);
 
-        this._dir_vector.scale((vnew - v) * 0.9);
-        this._dir_vector.add(physicsObject.velocity);
+        this._target_direction.scale((vnew - v) * 0.9);
+        this._target_direction.add(physicsObject.velocity);
         //this._dir_vector.add(this._reflection_vector);
         if (this.Transform.angular > 0.1 || this.Transform.angular < -0.1) {
-            physicsObject.velocity.set(this._dir_vector.x, this._dir_vector.y);
+            physicsObject.velocity.set(this._target_direction.x, this._target_direction.y);
         } else {
             physicsObject.velocity.set(this._reflection_vector.x, this._reflection_vector.y);
         }
-
-        //this._reflection_vector.add(this._dir_vector, (vnew - v) * 0.9);
-
-        let correlation = Vector2.dot(this._dir_vector, this._reflection_vector);
-
- 
-
-        //console.log(correlation)
-
-        //if (correlation > 0.2) {
-        // } else {
-        //     let origin_power = physicsObject.velocity.length() * 0.7;
-        //     physicsObject.velocity.set(this._reflection_vector.x, this._reflection_vector.y);
-        //     physicsObject.velocity.scale(origin_power);
-        // }
     }
 
     parse_properties_struct(properties_data: string): void {

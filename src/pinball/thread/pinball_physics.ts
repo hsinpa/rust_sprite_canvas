@@ -126,6 +126,14 @@ export class PinballPhysics {
                 this.world_object_collision(physicsInterface.Transform);
                 this.world_boundary_collision(physicsInterface.Transform);
 
+
+                if (physicsInterface.Transform.last_position == undefined) {
+                    physicsInterface.Transform.last_position = physicsInterface.Transform.position.clone();
+                    physicsInterface.Transform.last_velocity = physicsInterface.Transform.velocity.clone();
+                } else {
+                    physicsInterface.Transform.last_position.copy(physicsInterface.Transform.position);
+                    physicsInterface.Transform.last_velocity.copy(physicsInterface.Transform.velocity);
+                }
             }
 
             index++;
