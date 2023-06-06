@@ -1,4 +1,4 @@
-import {PhysicsInterface, PositionTransformation} from './PhysicsInterface';
+import {CollisionCalResult, PhysicsInterface, PositionTransformation} from './PhysicsInterface';
 import { PhysicsTransform } from "../utility/pinball_types";
 import { ColliderStruct, SpriteLayoutStruct, LineCollision } from "../utility/unity_sprite_struct";
 import { IntVector2 } from "../../utility/UniversalType";
@@ -51,7 +51,7 @@ export default class LineComponent extends PhysicsInterface {
     parse_properties_struct(properties_data: string): void {
     }
 
-    handle_collision(physicsObject: PhysicsTransform): void {
-
+    handle_collision(physicsObject: PhysicsTransform): CollisionCalResult {
+        return null;
     }
 }

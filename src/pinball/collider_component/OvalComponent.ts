@@ -1,4 +1,4 @@
-import {PhysicsInterface, PositionTransformation} from './PhysicsInterface';
+import {CollisionCalResult, PhysicsInterface, PositionTransformation} from './PhysicsInterface';
 import { PhysicsTransform } from "../utility/pinball_types";
 import { ColliderStruct, SpriteLayoutStruct, OvalCollision } from "../utility/unity_sprite_struct";
 import { IntVector2,  } from "../../utility/UniversalType";
@@ -38,7 +38,7 @@ export default class OvalComponent extends PhysicsInterface {
     }  
 
 
-    handle_collision(physicsObject: PhysicsTransform): void {
+    handle_collision(physicsObject: PhysicsTransform): CollisionCalResult {
         if (physicsObject.radius == undefined) return;
 
         ConvertSphereToVector(this._ovalCollision.sphere_a, this._transform, this._a_vector, this._rotationMatrix);
@@ -102,6 +102,8 @@ export default class OvalComponent extends PhysicsInterface {
 
             physicsObject.velocity.set(this._reflection_vector.x, this._reflection_vector.y);
         }
+
+        return null;
     }
 
     parse_properties_struct(properties_data: string): void {

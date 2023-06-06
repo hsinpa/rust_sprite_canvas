@@ -1,4 +1,4 @@
-import {PhysicsInterface, PositionTransformation} from './PhysicsInterface';
+import {CollisionCalResult, PhysicsInterface, PositionTransformation} from './PhysicsInterface';
 import { PhysicsTransform } from "../utility/pinball_types";
 import { ColliderStruct, RectCollision, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
 import { IntVector2 } from "../../utility/UniversalType";
@@ -7,8 +7,8 @@ import { Graphics } from 'pixi.js';
 export default class RectComponent extends PhysicsInterface {
     private _rectCollision: RectCollision;
 
-    handle_collision(physicsObject: PhysicsTransform): void {
-
+    handle_collision(physicsObject: PhysicsTransform): CollisionCalResult {
+        return null;
     }
 
     render_collider(graphics: Graphics): void {

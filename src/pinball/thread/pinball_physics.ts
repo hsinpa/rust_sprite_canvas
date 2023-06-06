@@ -9,6 +9,7 @@ import { ObjectInterface } from "../object_component/ObjectInterface";
 import { parse_collection_opt } from "../collider_component/PhysicsVisualizeTool";
 import { IntVector2 } from "../../utility/UniversalType";
 import { Vector2 } from "../../utility/VectorMath";
+import { SphereBumper } from "../object_component/SphereBumper";
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
@@ -19,6 +20,8 @@ export class PinballPhysics {
 
     public get simulated_object() { return this._physics_transform; }
     private _world_acceleration = new Vector2(0, -200);
+
+    private _sphereBumperWorker : SphereBumper = new SphereBumper();
 
     set_constraint(data : SceneLayoutStruct) {
         this._world_struct = data;
@@ -54,6 +57,12 @@ export class PinballPhysics {
         let r_flippers = this.physics_tags.getValue(PinballLayer.Flipper_Right);
         r_flippers.forEach(x => {
             this.physics_components.getValue(x).handle_collision(ball_object);
+        });
+
+        //Sphere Bumper
+        let sphere_bumper = this.physics_tags.getValue(PinballLayer.Bumper);
+        sphere_bumper.forEach(x => {
+            this._sphereBumperWorker.simulate(this.physics_components.getValue(x), ball_object);
         });
     }
 
@@ -101,17 +110,7 @@ export class PinballPhysics {
         let decay = 0.998;
         this.physics_components.forEach((id, physicsInterface) => {
             if (physicsInterface.Tag != PinballLayer.Ball) return;
-            //Rotation
-            // if (physicsInterface.Transform.angular != undefined) {
-            //     let rotation = physicsInterface.Transform.rotation + (physicsInterface.Transform.angular * delta_time * physicsInterface.Inverse);
-                
-            //     if (physicsInterface.Constraint != undefined && physicsInterface.Constraint.max_rotation != undefined && physicsInterface.Constraint.min_rotation != undefined ) {
 
-            //         rotation = Clamp(rotation, physicsInterface.Constraint.min_rotation, physicsInterface.Constraint.max_rotation);
-            //     }
-            
-            //     physicsInterface.Transform.rotation = rotation;
-            // }
 
             //Translation
             if (physicsInterface.Tag == PinballLayer.Ball && physicsInterface.Transform.velocity != undefined) {

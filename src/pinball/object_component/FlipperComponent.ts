@@ -1,12 +1,7 @@
-import { PhysicsInterface } from "../collider_component/PhysicsInterface";
+import { CollisionCalResult, PhysicsInterface } from "../collider_component/PhysicsInterface";
+import { PhysicsTransform } from "../utility/pinball_types";
 import { ObjectInterface } from "./ObjectInterface";
 
+export class FlipperComponent  {
 
-export class FlipperComponent implements ObjectInterface {
-    setup(physicsInterface: PhysicsInterface): void {
-    }
-    
-    simulate(delta_time: number): void {
-    
-    }
 }

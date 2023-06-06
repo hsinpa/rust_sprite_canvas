@@ -1,6 +1,6 @@
-import { PhysicsInterface } from "../collider_component/PhysicsInterface";
+import { PhysicsInterface, CollisionCalResult } from "../collider_component/PhysicsInterface";
+import { PhysicsTransform } from "../utility/pinball_types";
 
-export interface ObjectInterface {
-    simulate(delta_time: number): void,
-    setup(physicsInterface: PhysicsInterface): void
+export abstract class ObjectInterface {
+    abstract simulate(physicsInterface: PhysicsInterface, physicsObject: PhysicsTransform): void;
 }
