@@ -19,7 +19,7 @@ export class PinballPhysics {
     public physics_tags : Dictionary<number, number[]> = new Dictionary();
 
     public get simulated_object() { return this._physics_transform; }
-    private _world_acceleration = new Vector2(0, -200);
+    private _world_acceleration = new Vector2(0, -300);
 
     private _sphereBumperWorker : SphereBumper = new SphereBumper();
 
@@ -117,14 +117,12 @@ export class PinballPhysics {
                 let acceleration = physicsInterface.Transform.acceleration;
                     acceleration.set(this._world_acceleration.x, this._world_acceleration.y);                    
 
-
                 physicsInterface.Transform.velocity.scale(decay);
                 physicsInterface.Transform.velocity.add(acceleration, delta_time);
                 physicsInterface.Transform.position.add(physicsInterface.Transform.velocity, delta_time);                
                 
                 this.world_object_collision(physicsInterface.Transform);
                 this.world_boundary_collision(physicsInterface.Transform);
-
 
                 if (physicsInterface.Transform.last_position == undefined) {
                     physicsInterface.Transform.last_position = physicsInterface.Transform.position.clone();

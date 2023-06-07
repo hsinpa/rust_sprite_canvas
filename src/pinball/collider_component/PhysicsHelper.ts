@@ -51,19 +51,20 @@ export function penetration_check(point_p_a: Vector2, point_p_b: Vector2, transf
     let point_q_b = transform.position;
     let process_dist = Vector2.distance(point_q_b, point_q_a);
     
-
     let isIntersect = DoIntersect(point_p_a, point_p_b, point_q_a, point_q_b);
-    let intersection_point = GetLineIntersection(point_p_a, point_p_b, point_q_a, point_q_b);
+
+    console.log(point_q_a, point_q_b);
+    // let intersection_point = GetLineIntersection(point_p_a, point_p_b, point_q_a, point_q_b);
     
-    let closestStruct = closestPointOnSegment(intersection_point,  point_q_a, point_q_b);
-    const lerp_radius = 0.18;
-    const distance = Vector2.distance(point_q_a, point_q_b);
-    let target_direction = Vector2.substract(intersection_point, closestStruct.point);
+    // let closestStruct = closestPointOnSegment(intersection_point,  point_q_a, point_q_b);
+    // const lerp_radius = 0.18;
+    // const distance = Vector2.distance(point_q_a, point_q_b);
+    // let target_direction = Vector2.substract(intersection_point, closestStruct.point);
 
     let result = (distance == 0 || distance > transform.radius + lerp_radius);
 
-    if (isIntersect == true) {
+    // if (isIntersect == true) {
 
 
-    }
+    // }
 }

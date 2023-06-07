@@ -9,6 +9,7 @@ import { PerpendicularClockwise, VectorSubstract, Normalize2D, VectorNumScale, L
 import { Graphics, Matrix, Point } from 'pixi.js';
 import {ConvertSphereToVector, NormalizeSphereCollider, closestPointOnSegment, penetration_check} from './PhysicsHelper'
 import { Vector2 } from '../../utility/VectorMath';
+import { DoIntersect } from '../../utility/LineMath';
 
 export default class OvalComponent extends PhysicsInterface {
     private _ovalCollision: OvalCollision;
@@ -48,8 +49,11 @@ export default class OvalComponent extends PhysicsInterface {
         const lerp_radius = Lerp(this._ovalCollision.sphere_a.radius, this._ovalCollision.sphere_b.radius, closestStruct.t);
         const distance = VectorDistance(closestStruct.point, physicsObject.position);
         this._target_direction = Vector2.substract(physicsObject.position, closestStruct.point, this._target_direction);
-        penetration_check(this._a_vector,  this._b_vector, physicsObject)
-        //console.log("Penetration Check " + penetration_check(this._a_vector,  this._b_vector, physicsObject));
+        let reverse_ball_velocity_nor = physicsObject.velocity.clone().scale(-1).normalize();
+
+        //console.log(this._a_vector, this._b_vector);
+        //penetration_check(this._a_vector, this._b_vector, physicsObject)
+        //console.log("DoIntersect " + isIntersect);
 
         //Out of reach
         if (distance == 0 || distance > physicsObject.radius + lerp_radius) return;
@@ -61,12 +65,8 @@ export default class OvalComponent extends PhysicsInterface {
         this._target_direction.scale(1 / distance);
         ///let nativeDirNormal = this._target_direction.clone();
 
-        //Position
-        let corr = (physicsObject.radius + lerp_radius - distance);
-        physicsObject.position.add(this._target_direction, corr);
-
         //Velocity
-        let reverse_ball_velocity_nor = physicsObject.velocity.clone().scale(-1).normalize();
+        const flipper_is_moving = (this.Transform.angular > 0.1 || this.Transform.angular < -0.1);
 
         //Reflection
         let flipperDir = Vector2.substract(this._a_vector, this._b_vector);
@@ -76,12 +76,25 @@ export default class OvalComponent extends PhysicsInterface {
         //If hit on sphere part        
         if (sphere_a_distance < physicsObject.radius + this._ovalCollision.sphere_a.radius ||
             sphere_b_distance < physicsObject.radius + this._ovalCollision.sphere_b.radius ) {
+
+                //Position On Sphere Part
+                physicsObject.position.add(this._target_direction, physicsObject.radius + lerp_radius - distance);
+
                 Vector2.reflect(this._target_direction, reverse_ball_velocity_nor, this._reflection_vector);
+                
             } else {
+
+                //Position On Line Part//
+                if (Vector2.dot(this._target_direction, reverse_ball_velocity_nor) >= 0.0 || (flipper_is_moving)) {
+                    physicsObject.position.add(this._target_direction, physicsObject.radius + lerp_radius - distance);
+                } else {
+                    physicsObject.position.add(this._target_direction, -(distance+ physicsObject.radius + lerp_radius));
+                }
+
                 Vector2.reflect(flipperDir, reverse_ball_velocity_nor, this._reflection_vector);
             }
 
-        if (this.Transform.angular > 0.1 || this.Transform.angular < -0.1) {
+        if (flipper_is_moving) {
             //Flipper Strength
             let difference_to_pointA = closestStruct.point;
             difference_to_pointA.add(this._target_direction, lerp_radius);
