@@ -2,9 +2,11 @@ import { CollisionCalResult, PhysicsInterface } from "../collider_component/Phys
 import { PhysicsTransform } from "../utility/pinball_types";
 import { PinBallElementInterface } from "./PinBallElementInterface";
 
-export class SideBumper extends PinBallElementInterface {
+export class Flipper extends PinBallElementInterface  {
     simulate(physicsInterface: PhysicsInterface, physicsObject: PhysicsTransform): void {
         let collision_result = physicsInterface.handle_collision(physicsObject);
+
+        if (collision_result == null) return;
 
         physicsObject.position.copy(collision_result.position);
         physicsObject.velocity.copy(collision_result.velocity);

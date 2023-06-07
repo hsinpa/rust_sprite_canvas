@@ -1,11 +1,11 @@
 import { CollisionCalResult, PhysicsInterface } from "../collider_component/PhysicsInterface";
 import { PhysicsTransform } from "../utility/pinball_types";
-import { ObjectInterface } from "./ObjectInterface";
+import { PinBallElementInterface } from "./PinBallElementInterface";
 
 
 const bumper_strength = 7;
 
-export class SphereBumper extends ObjectInterface {
+export class SphereBumper extends PinBallElementInterface {
 
 
     simulate(physicsInterface: PhysicsInterface, physicsObject: PhysicsTransform): void {

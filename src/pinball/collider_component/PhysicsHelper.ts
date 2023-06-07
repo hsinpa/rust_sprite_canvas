@@ -61,8 +61,6 @@ export function penetration_check(point_p_a: Vector2, point_p_b: Vector2, transf
     // const distance = Vector2.distance(point_q_a, point_q_b);
     // let target_direction = Vector2.substract(intersection_point, closestStruct.point);
 
-    let result = (distance == 0 || distance > transform.radius + lerp_radius);
-
     // if (isIntersect == true) {
 
 

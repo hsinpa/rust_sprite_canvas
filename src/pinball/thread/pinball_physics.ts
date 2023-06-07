@@ -5,11 +5,12 @@ import { VectorNumScale, VectorAdd, PushDictionaryArray, Clamp } from "../../uti
 import { CollisionType, SceneLayoutStruct, SpriteLayoutStruct } from "../utility/unity_sprite_struct";
 import { Dictionary } from "typescript-collections";
 import { PhysicsInterface } from "../collider_component/PhysicsInterface";
-import { ObjectInterface } from "../object_component/ObjectInterface";
+import { PinBallElementInterface } from "../object_component/PinBallElementInterface";
 import { parse_collection_opt } from "../collider_component/PhysicsVisualizeTool";
 import { IntVector2 } from "../../utility/UniversalType";
 import { Vector2 } from "../../utility/VectorMath";
 import { SphereBumper } from "../object_component/SphereBumper";
+import { Flipper } from "../object_component/Flipper";
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
@@ -22,6 +23,7 @@ export class PinballPhysics {
     private _world_acceleration = new Vector2(0, -300);
 
     private _sphereBumperWorker : SphereBumper = new SphereBumper();
+    private _flipperWorker : Flipper = new Flipper();
 
     set_constraint(data : SceneLayoutStruct) {
         this._world_struct = data;
@@ -46,30 +48,19 @@ export class PinballPhysics {
     }
 
     world_object_collision(ball_object: PhysicsTransform) {
-
         //Left Flipper
-        let l_flippers = this.physics_tags.getValue(PinballLayer.Flipper_Left);
-        l_flippers.forEach(x => {
-            this.physics_components.getValue(x).handle_collision(ball_object);
-        });
-
+        this.pinball_element_opt(PinballLayer.Flipper_Left, this._flipperWorker, ball_object);
         //Right Flipper
-        let r_flippers = this.physics_tags.getValue(PinballLayer.Flipper_Right);
-        r_flippers.forEach(x => {
-            this.physics_components.getValue(x).handle_collision(ball_object);
-        });
+        this.pinball_element_opt(PinballLayer.Flipper_Right, this._flipperWorker, ball_object);
 
         //Sphere Bumper
-        let sphere_bumper = this.physics_tags.getValue(PinballLayer.Bumper);
-        sphere_bumper.forEach(x => {
-            this._sphereBumperWorker.simulate(this.physics_components.getValue(x), ball_object);
-        });
+        this.pinball_element_opt(PinballLayer.Bumper, this._sphereBumperWorker, ball_object);
     }
 
     world_boundary_collision(ball_object: PhysicsTransform) {
         if (ball_object.radius == undefined) return ball_object;
 
-        let decay = 0.8;
+        let decay = 0.7;
         //Left
         if (ball_object.position.x < ball_object.radius) {
             ball_object.position.x = ball_object.radius;
@@ -135,5 +126,20 @@ export class PinballPhysics {
 
             index++;
         });
+    }
+
+    private pinball_element_opt(layer: number, element: PinBallElementInterface, ball_object: PhysicsTransform, opt: (x : PhysicsInterface) => void = null) {
+        let layer_number = this.physics_tags.getValue(layer);
+
+        if (layer_number == null) return;
+
+        layer_number.forEach(x => {
+            let physicsInterface = this.physics_components.getValue(x)
+
+            if (physicsInterface != null) element.simulate(physicsInterface, ball_object);
+
+            if (physicsInterface != null && opt != null) opt(physicsInterface);
+        });
+
     }
 }
