@@ -37,6 +37,8 @@ export interface SceneLayoutStruct {
 
 export interface SpriteLayoutStruct {
     id: number,
+
+    object_name: string,
     texture_name: string,
     sprite_name: string,
 

@@ -86,17 +86,20 @@ export default class MapLayoutManager {
             let singleLayout : SpriteLayoutStruct = sprite_layout.spriteLayoutStructs[i];
             let texture = this._sprite_assets.get_texture(singleLayout.sprite_name);
             let spriteStruct = this._sprite_assets.get_sprite_struct(singleLayout.sprite_name);
+            
+            let point = convert_position(singleLayout.x, singleLayout.y, sprite_layout.frame_width, sprite_layout.frame_height, sprite_layout.screen_width, sprite_layout.screen_height);
+
+            sprite_layout.spriteLayoutStructs[i].x = point.x;
+            sprite_layout.spriteLayoutStructs[i].y = sprite_layout.screen_height - point.y;
+
+            if (texture == null) continue;
 
             let sprite = Sprite.from(texture);
 
             //Position
-            let point = convert_position(singleLayout.x, singleLayout.y, sprite_layout.frame_width, sprite_layout.frame_height, sprite_layout.screen_width, sprite_layout.screen_height);
             sprite.transform.position.x = point.x;
             sprite.transform.position.y = point.y;
             
-            sprite_layout.spriteLayoutStructs[i].x = point.x;
-            sprite_layout.spriteLayoutStructs[i].y = sprite_layout.screen_height - point.y;
-
             //Scale
             this.convert_scale(singleLayout.scale_x * singleLayout.flip_x, sprite_layout.frame_width, this._width);
             sprite.transform.scale.set( singleLayout.scale_x * singleLayout.flip_x, 
