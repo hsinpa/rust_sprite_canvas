@@ -15,4 +15,6 @@ export interface PhysicsTransform {
 
     last_position?: Vector2,
     last_velocity?: Vector2,
+
+    last_interact_object: number,
 }

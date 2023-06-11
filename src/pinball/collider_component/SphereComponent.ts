@@ -4,6 +4,7 @@ import { ColliderStruct, ConstraintStruct, SphereCollision, SpriteLayoutStruct }
 import { IntVector2 } from "../../utility/UniversalType";
 import { Graphics } from 'pixi.js';
 import { Vector2 } from '../../utility/VectorMath';
+import { GameConfig } from '../utility/pinball_static';
 
 export default class SphereComponent extends PhysicsInterface {
 
@@ -25,7 +26,7 @@ export default class SphereComponent extends PhysicsInterface {
         velocity.normalize();
 
         position.add(velocity, radius);
-        velocity.scale(physicsObject.velocity.length() * 0.7);
+        velocity.scale(physicsObject.velocity.length() * GameConfig.Restitution);
 
         this._collisionResult.position.copy(position);
         this._collisionResult.velocity.copy(velocity);

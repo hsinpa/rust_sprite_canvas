@@ -11,6 +11,8 @@ import { IntVector2 } from "../../utility/UniversalType";
 import { Vector2 } from "../../utility/VectorMath";
 import { SphereBumper } from "../object_component/SphereBumper";
 import { Flipper } from "../object_component/Flipper";
+import { UniversalElement } from "../object_component/UniversalElement";
+import { SideBumper } from "../object_component/SideBumper";
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
@@ -22,8 +24,9 @@ export class PinballPhysics {
     public get simulated_object() { return this._physics_transform; }
     private _world_acceleration = new Vector2(0, -300);
 
+    private _sideBumperWorker : SideBumper = new SideBumper();
     private _sphereBumperWorker : SphereBumper = new SphereBumper();
-    private _flipperWorker : Flipper = new Flipper();
+    private _universalElementWorker : UniversalElement = new UniversalElement();
 
     set_constraint(data : SceneLayoutStruct) {
         this._world_struct = data;
@@ -48,13 +51,20 @@ export class PinballPhysics {
     }
 
     world_object_collision(ball_object: PhysicsTransform) {
+
+        ball_object.last_interact_object = 0;
+
         //Left Flipper
-        this.pinball_element_opt(PinballLayer.Flipper_Left, this._flipperWorker, ball_object);
+        this.pinball_element_opt(PinballLayer.Flipper_Left, this._universalElementWorker, ball_object);
         //Right Flipper
-        this.pinball_element_opt(PinballLayer.Flipper_Right, this._flipperWorker, ball_object);
+        this.pinball_element_opt(PinballLayer.Flipper_Right, this._universalElementWorker, ball_object);
 
         //Sphere Bumper
-        this.pinball_element_opt(PinballLayer.Bumper, this._sphereBumperWorker, ball_object);
+        this.pinball_element_opt(PinballLayer.SphereBumper, this._sphereBumperWorker, ball_object);
+        this.pinball_element_opt(PinballLayer.SideBumper, this._sideBumperWorker, ball_object);
+
+        //Others / Wall
+        this.pinball_element_opt(PinballLayer.Default, this._universalElementWorker, ball_object);
     }
 
     world_boundary_collision(ball_object: PhysicsTransform) {

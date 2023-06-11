@@ -2,17 +2,17 @@ import { CollisionCalResult, PhysicsInterface } from "../collider_component/Phys
 import { PhysicsTransform } from "../utility/pinball_types";
 import { PinBallElementInterface } from "./PinBallElementInterface";
 
-export class SideBumper extends PinBallElementInterface {
+export class UniversalElement extends PinBallElementInterface  {
     simulate(physicsInterface: PhysicsInterface, physicsObject: PhysicsTransform): void {
         if (physicsObject.last_interact_object > 0) return; //It is been process by other collider
-
+        
         let collision_result = physicsInterface.handle_collision(physicsObject);
 
         if (collision_result == null) return;
 
-        collision_result.velocity.normalize();
-
         physicsObject.position.copy(collision_result.position);
-        physicsObject.velocity.copy(collision_result.velocity.scale(500));
+        physicsObject.velocity.copy(collision_result.velocity);
+
+        physicsObject.last_interact_object = physicsInterface.Id;
     }
 }

@@ -19,10 +19,10 @@ export function NormalizeSphereCollider(sphereCollision: SphereCollision, baseUn
     return sphereCollision;
 }
 
-export function ConvertSphereToVector(sphereCollision: SphereCollision, transform: PhysicsTransform, sourcePoint: Vector2, sourceMatrix: Matrix) {
+export function ConvertSphereToVector(point_x: number, point_y : number, transform: PhysicsTransform, sourcePoint: Vector2, sourceMatrix: Matrix) {
     let rotationMatrix = sourceMatrix.identity().rotate(-transform.rotation);
 
-    sourcePoint = sourcePoint.set(sphereCollision.x, sphereCollision.y);
+    sourcePoint = sourcePoint.set(point_x, point_y);
 
     rotationMatrix.apply(sourcePoint, sourcePoint);
 

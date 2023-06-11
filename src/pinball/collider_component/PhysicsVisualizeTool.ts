@@ -33,7 +33,6 @@ export function parse_collection_opt(layout: SceneLayoutStruct, callback: (sprit
     for (let i = 0; i < objectLens; i++) {
         let spriteStruct = layout.spriteLayoutStructs[i];
         let physicsInterface = parse_collision_data(spriteStruct, base_width);
-        console.log(physicsInterface);
         if (physicsInterface == null) continue;
 
         physicsInterface.set_transform({
@@ -73,8 +72,6 @@ export class PhysicsVisualizeTool {
 
         this._screen_height = layout.screen_height;
         this._physicsComponents = parse_collision_array(layout);
-
-        console.log(this._physicsComponents);
     }
 
     public visualize() {

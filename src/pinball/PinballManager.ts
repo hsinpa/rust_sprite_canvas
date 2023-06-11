@@ -44,7 +44,7 @@ export class PinballManager {
         this._inputHandler.RegisterKeyCodeEvent(this.on_keyboard_input.bind(this));
 
         this._spriteAssets = new SpriteAssetManager();
-        this._mapLayoutManager = new MapLayoutManager(this._spriteAssets);
+        this._mapLayoutManager = new MapLayoutManager(this._spriteAssets, );
         this._dynamicsRenderer = new DynamicRenderer(this._mapLayoutManager);
 
         this.prepare_layout_asset();
@@ -52,18 +52,24 @@ export class PinballManager {
     }
 
     private async prepare_layout_asset() {
+        const ideal_canvas_height = 800;
+        
         //Load spritesheet
         await this._spriteAssets.prepare_spritesheet(Config.pinball_spritesheet);
 
         //Load map data
         let sceneLayout = await this._mapLayoutManager.load_map(Config.pinball_map_layout);
-        let browser_width = document.documentElement.clientWidth;
-        let aspect_ratio = sceneLayout.frame_height / sceneLayout.frame_width;
-        let browser_heigth = browser_width * aspect_ratio;
+        let aspect_ratio = sceneLayout.frame_width / sceneLayout.frame_height;
+        let browser_width = ideal_canvas_height * aspect_ratio;
+        
+        sceneLayout.screen_height = ideal_canvas_height;
+        sceneLayout.screen_width = browser_width;
 
-        this._mapLayoutManager.set_browser_stat(sceneLayout.screen_width, sceneLayout.screen_height);
+        console.log(`Browser height ${ideal_canvas_height}, Browser Width ${browser_width}`);
 
-        this._pixi_app = new Application({ width: sceneLayout.screen_width, height: sceneLayout.screen_height, background: '#83a32c' });
+        this._mapLayoutManager.set_browser_stat(browser_width, ideal_canvas_height);
+
+        this._pixi_app = new Application({ width: browser_width, height: ideal_canvas_height, background: '#83a32c' });
         this._pixi_dom.appendChild<any>(this._pixi_app.view);
 
         this._mapLayoutManager.render_map(sceneLayout, this._pixi_app.stage);

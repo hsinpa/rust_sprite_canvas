@@ -3,15 +3,18 @@ import { PhysicsTransform } from "../utility/pinball_types";
 import { PinBallElementInterface } from "./PinBallElementInterface";
 
 
-const bumper_strength = 7;
+const bumper_strength = 700;
 
 export class SphereBumper extends PinBallElementInterface {
 
 
     simulate(physicsInterface: PhysicsInterface, physicsObject: PhysicsTransform): void {
+        if (physicsObject.last_interact_object > 0) return; //It is been process by other collider
         let collision_result = physicsInterface.handle_collision(physicsObject);
 
         if (collision_result == null) return;
+
+        collision_result.velocity.normalize();
 
         physicsObject.position.copy(collision_result.position);
         physicsObject.velocity.copy(collision_result.velocity.scale(bumper_strength));

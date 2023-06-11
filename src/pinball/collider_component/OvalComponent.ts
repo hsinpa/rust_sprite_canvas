@@ -2,7 +2,7 @@ import {CollisionCalResult, PhysicsInterface, PositionTransformation} from './Ph
 import { PhysicsTransform } from "../utility/pinball_types";
 import { ColliderStruct, SpriteLayoutStruct, OvalCollision } from "../utility/unity_sprite_struct";
 import { IntVector2,  } from "../../utility/UniversalType";
-import { PinballLayer } from '../utility/pinball_static';
+import { GameConfig, PinballLayer } from '../utility/pinball_static';
 
 import { PerpendicularClockwise, VectorSubstract, Normalize2D, VectorNumScale, Lerp, VectorDistance } from "../../utility/UtilityMethod";
 
@@ -44,8 +44,8 @@ export default class OvalComponent extends PhysicsInterface {
         let position = this._collisionResult.position.copy(physicsObject.position);
         let velocity = this._collisionResult.velocity.copy(physicsObject.velocity);
 
-        ConvertSphereToVector(this._ovalCollision.sphere_a, this._transform, this._a_vector, this._rotationMatrix);
-        ConvertSphereToVector(this._ovalCollision.sphere_b, this._transform, this._b_vector, this._rotationMatrix);
+        ConvertSphereToVector(this._ovalCollision.sphere_a.x, this._ovalCollision.sphere_a.y, this._transform, this._a_vector, this._rotationMatrix);
+        ConvertSphereToVector(this._ovalCollision.sphere_b.x, this._ovalCollision.sphere_b.y, this._transform, this._b_vector, this._rotationMatrix);
 
         let closestStruct = closestPointOnSegment(position,  this._a_vector, this._b_vector, this._velocity_vector);
         const lerp_radius = Lerp(this._ovalCollision.sphere_a.radius, this._ovalCollision.sphere_b.radius, closestStruct.t);
@@ -107,12 +107,12 @@ export default class OvalComponent extends PhysicsInterface {
             let v = Vector2.dot(velocity, this._target_direction);
             let vnew = Vector2.dot(surfaceVel, this._target_direction);
 
-            this._target_direction.scale((vnew - v) * 0.9);
+            this._target_direction.scale((vnew - v) * GameConfig.Restitution);
             this._target_direction.add(velocity);
     
             velocity.set(this._target_direction.x, this._target_direction.y);
         } else {
-            let origin_power = velocity.length() * 0.7;
+            let origin_power = velocity.length() * GameConfig.Restitution;
             this._reflection_vector.scale(origin_power);
 
             velocity.set(this._reflection_vector.x, this._reflection_vector.y);
@@ -164,7 +164,7 @@ export default class OvalComponent extends PhysicsInterface {
         this._ovalCollision.sphere_a = NormalizeSphereCollider(this._ovalCollision.sphere_a, this._base_unit);
         this._ovalCollision.sphere_b = NormalizeSphereCollider(this._ovalCollision.sphere_b, this._base_unit);
 
-        ConvertSphereToVector(this._ovalCollision.sphere_a, this._transform, this._a_vector, this._rotationMatrix);
-        ConvertSphereToVector(this._ovalCollision.sphere_b, this._transform, this._b_vector, this._rotationMatrix);
+        ConvertSphereToVector(this._ovalCollision.sphere_a.x, this._ovalCollision.sphere_a.y, this._transform, this._a_vector, this._rotationMatrix);
+        ConvertSphereToVector(this._ovalCollision.sphere_b.x, this._ovalCollision.sphere_b.y, this._transform, this._b_vector, this._rotationMatrix);
     }
 }

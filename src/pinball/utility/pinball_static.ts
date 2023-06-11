@@ -6,11 +6,20 @@ export const Config = Object.freeze({
 });
 
 export const PinballLayer = Object.freeze({
+    "Default": 0,
     "Flipper_Left": 6,
     "Flipper_Right": 7,
     "Ball": 8,
-    "Bumper": 9,
-    "Shooter": 10,
+    "SphereBumper": 9,
+    "SideBumper": 10,
+    "Shooter": 11,
+
 });
 
 export const GRAVITY = -10;
+export const GameConfig = Object.freeze({
+    Gravity : -10,
+    SideBumperStrength : 600,
+    SphereBumperStrength : 700,
+    Restitution: 0.8
+});
