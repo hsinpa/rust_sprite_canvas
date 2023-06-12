@@ -37,8 +37,8 @@ export function parse_collection_opt(layout: SceneLayoutStruct, callback: (sprit
 
         physicsInterface.set_transform({
             velocity: new Vector2(), acceleration: new Vector2(), angular: 0,
-            id: spriteStruct.id, rotation: spriteStruct.rotation,
-            position: new Vector2(spriteStruct.x, spriteStruct.y), scale: new Vector2(spriteStruct.scale_x, spriteStruct.scale_y)
+            id: spriteStruct.id, last_interact_object: 0,
+            rotation: spriteStruct.rotation, position: new Vector2(spriteStruct.x, spriteStruct.y), scale: new Vector2(spriteStruct.scale_x, spriteStruct.scale_y)
             
         }, spriteStruct.constraintStruct);
 

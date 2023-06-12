@@ -10,7 +10,9 @@ export interface PositionTransformation {
 
 export interface CollisionCalResult {
     position: Vector2,
-    velocity: Vector2,
+
+    bounce_velocity: Vector2,
+    face_normal: Vector2
 }
 
 export abstract class PhysicsInterface {
@@ -38,7 +40,7 @@ export abstract class PhysicsInterface {
         this._inverse = inverse;
         this._base_unit = base_unit;
 
-        this._collisionResult = {position: new Vector2(), velocity: new Vector2()};
+        this._collisionResult = {position: new Vector2(), bounce_velocity: new Vector2(), face_normal: new Vector2()};
     }
 
     set_transform(p_transform : PhysicsTransform, contraint_struct: ConstraintStruct) {

@@ -20,7 +20,7 @@ export default class SphereComponent extends PhysicsInterface {
         let position = this._collisionResult.position;
             position.copy(this.Transform.position);
 
-        let velocity = this._collisionResult.velocity;
+        let velocity = this._collisionResult.bounce_velocity;
 
         velocity = Vector2.substract(physicsObject.position, this.Transform.position, velocity);
         velocity.normalize();
@@ -29,7 +29,7 @@ export default class SphereComponent extends PhysicsInterface {
         velocity.scale(physicsObject.velocity.length() * GameConfig.Restitution);
 
         this._collisionResult.position.copy(position);
-        this._collisionResult.velocity.copy(velocity);
+        this._collisionResult.bounce_velocity.copy(velocity);
 
         return this._collisionResult;
     }

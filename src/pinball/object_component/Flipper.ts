@@ -11,6 +11,6 @@ export class Flipper extends PinBallElementInterface  {
         if (collision_result == null) return;
 
         physicsObject.position.copy(collision_result.position);
-        physicsObject.velocity.copy(collision_result.velocity);
+        physicsObject.velocity.copy(collision_result.bounce_velocity);
     }
 }
