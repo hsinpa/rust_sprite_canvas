@@ -17,6 +17,7 @@ export default class LineComponent extends PhysicsInterface {
     private _point_b: Vector2 = new Vector2();
     private _closest_point: Vector2 = new Vector2();
 
+    private _player_velocity: Vector2 = new Vector2();
 
     constructor(id: number, tag: number, inverse_value : number, base_unit: number) {
         super(id, tag, inverse_value, base_unit);
@@ -66,8 +67,8 @@ export default class LineComponent extends PhysicsInterface {
 
     handle_collision(physicsObject: PhysicsTransform): CollisionCalResult {
         let position = this._collisionResult.position.copy(physicsObject.position);
-        let velocity = this._collisionResult.velocity.copy(physicsObject.velocity);
-        
+        let velocity = this._collisionResult.bounce_velocity.copy(physicsObject.velocity);
+
         // ConvertSphereToVector(this._lineCollision.point_a.x, this._lineCollision.point_a.y, this._transform, this._point_a, this._rotationMatrix);
         // ConvertSphereToVector(this._lineCollision.point_b.x, this._lineCollision.point_b.y, this._transform, this._point_b, this._rotationMatrix);
 
@@ -86,10 +87,23 @@ export default class LineComponent extends PhysicsInterface {
         position.add(velocity, -(physicsObject.radius - distance));
         
         //Bounce direction
+        this._player_velocity.copy(physicsObject.velocity);
+        this._player_velocity.normalize();
+        this._player_velocity.scale(-1);
+
+
         velocity = Vector2.substract (this._point_a, this._point_b, velocity);
         velocity.normalize();
         velocity = Vector2.perpendicular(velocity, velocity);
-        velocity.scale(physicsObject.velocity.length() * GameConfig.Restitution);
+
+        this._collisionResult.face_normal.copy(velocity);
+
+        let likelihood = Vector2.dot(this._player_velocity, velocity);
+
+        //velocity.scale(physicsObject.velocity.length() * GameConfig.Restitution);
+
+        Vector2.reflect(velocity, this._player_velocity, velocity);
+        console.log(velocity, this._player_velocity);
 
         return this._collisionResult;
     }

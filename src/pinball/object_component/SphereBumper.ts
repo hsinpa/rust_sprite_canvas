@@ -14,9 +14,9 @@ export class SphereBumper extends PinBallElementInterface {
 
         if (collision_result == null) return;
 
-        collision_result.velocity.normalize();
+        collision_result.bounce_velocity.normalize();
 
         physicsObject.position.copy(collision_result.position);
-        physicsObject.velocity.copy(collision_result.velocity.scale(bumper_strength));
+        physicsObject.velocity.copy(collision_result.bounce_velocity.scale(bumper_strength));
     }
 }

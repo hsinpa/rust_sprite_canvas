@@ -11,7 +11,7 @@ export class UniversalElement extends PinBallElementInterface  {
         if (collision_result == null) return;
 
         physicsObject.position.copy(collision_result.position);
-        physicsObject.velocity.copy(collision_result.velocity);
+        physicsObject.velocity.copy(collision_result.bounce_velocity);
 
         physicsObject.last_interact_object = physicsInterface.Id;
     }

@@ -21,5 +21,5 @@ export const GameConfig = Object.freeze({
     Gravity : -10,
     SideBumperStrength : 600,
     SphereBumperStrength : 700,
-    Restitution: 0.8
+    Restitution: 0.7
 });

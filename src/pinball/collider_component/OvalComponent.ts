@@ -42,7 +42,7 @@ export default class OvalComponent extends PhysicsInterface {
     handle_collision(physicsObject: PhysicsTransform): CollisionCalResult {
         if (physicsObject.radius == undefined) return null;
         let position = this._collisionResult.position.copy(physicsObject.position);
-        let velocity = this._collisionResult.velocity.copy(physicsObject.velocity);
+        let velocity = this._collisionResult.bounce_velocity.copy(physicsObject.velocity);
 
         ConvertSphereToVector(this._ovalCollision.sphere_a.x, this._ovalCollision.sphere_a.y, this._transform, this._a_vector, this._rotationMatrix);
         ConvertSphereToVector(this._ovalCollision.sphere_b.x, this._ovalCollision.sphere_b.y, this._transform, this._b_vector, this._rotationMatrix);

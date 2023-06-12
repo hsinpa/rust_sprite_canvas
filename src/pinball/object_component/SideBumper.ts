@@ -10,9 +10,7 @@ export class SideBumper extends PinBallElementInterface {
 
         if (collision_result == null) return;
 
-        collision_result.velocity.normalize();
-
         physicsObject.position.copy(collision_result.position);
-        physicsObject.velocity.copy(collision_result.velocity.scale(500));
+        physicsObject.velocity.copy(collision_result.face_normal.scale(500));
     }
 }
