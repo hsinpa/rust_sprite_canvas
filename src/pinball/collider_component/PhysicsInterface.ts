@@ -46,9 +46,17 @@ export abstract class PhysicsInterface {
     set_transform(p_transform : PhysicsTransform, contraint_struct: ConstraintStruct) {
         this._transform = p_transform;
 
-        if (contraint_struct != null && contraint_struct.rest_point != 0) {
-            this._constraintStruct = contraint_struct;
-            this._transform.rotation = contraint_struct.rest_point;
+        if (contraint_struct != null) {
+            this._constraintStruct = {...contraint_struct};
+
+            this._constraintStruct.max_y *= this._base_unit;
+            this._constraintStruct.min_y *=  this._base_unit;
+
+            this._constraintStruct.max_x *= this._base_unit;
+            this._constraintStruct.min_x *= this._base_unit;
+
+            this._constraintStruct.rest_x = this._transform.position.x;
+            this._constraintStruct.rest_y = this._transform.position.y;
         }
     }
 

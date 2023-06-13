@@ -13,6 +13,7 @@ import { SphereBumper } from "../object_component/SphereBumper";
 import { Flipper } from "../object_component/Flipper";
 import { UniversalElement } from "../object_component/UniversalElement";
 import { SideBumper } from "../object_component/SideBumper";
+import { Shooter } from "../object_component/Shooter";
 
 export class PinballPhysics {
     private _world_struct: SceneLayoutStruct;
@@ -27,6 +28,7 @@ export class PinballPhysics {
     private _sideBumperWorker : SideBumper = new SideBumper();
     private _sphereBumperWorker : SphereBumper = new SphereBumper();
     private _universalElementWorker : UniversalElement = new UniversalElement();
+    private _shooterWorker : Shooter = new Shooter();
 
     set_constraint(data : SceneLayoutStruct) {
         this._world_struct = data;
@@ -62,6 +64,9 @@ export class PinballPhysics {
         //Sphere Bumper
         this.pinball_element_opt(PinballLayer.SphereBumper, this._sphereBumperWorker, ball_object);
         this.pinball_element_opt(PinballLayer.SideBumper, this._sideBumperWorker, ball_object);
+
+        //Shooter
+        this.pinball_element_opt(PinballLayer.Shooter, this._shooterWorker, ball_object);
 
         //Others / Wall
         this.pinball_element_opt(PinballLayer.Default, this._universalElementWorker, ball_object);

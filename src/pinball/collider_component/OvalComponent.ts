@@ -107,7 +107,7 @@ export default class OvalComponent extends PhysicsInterface {
             let v = Vector2.dot(velocity, this._target_direction);
             let vnew = Vector2.dot(surfaceVel, this._target_direction);
 
-            this._target_direction.scale((vnew - v) * GameConfig.Restitution);
+            this._target_direction.scale((vnew - v));
             this._target_direction.add(velocity);
     
             velocity.set(this._target_direction.x, this._target_direction.y);
@@ -148,14 +148,14 @@ export default class OvalComponent extends PhysicsInterface {
         let line_a_bottom = VectorNumScale(perpendicular_invert, this._ovalCollision.sphere_a.radius);
         let line_b_bottom = VectorNumScale(perpendicular_invert, this._ovalCollision.sphere_b.radius);
 
-        graphics.lineStyle(1, 0xffffff)
-        .moveTo( this._sphere_a.x + line_a_top.x, screen_height - this._sphere_a.y + line_a_top.y)
-        .lineTo(this._sphere_b.x + line_b_top.x, screen_height -this._sphere_b.y + line_b_top.y).endFill();
+        // graphics.lineStyle(1, 0xffffff)
+        // .moveTo( this._sphere_a.x + line_a_top.x, screen_height - this._sphere_a.y + line_a_top.y)
+        // .lineTo(this._sphere_b.x + line_b_top.x, screen_height -this._sphere_b.y + line_b_top.y).endFill();
 
 
-        graphics.lineStyle(1, 0xffffff)
-        .moveTo( this._sphere_a.x + line_a_bottom.x, screen_height - this._sphere_a.y + line_a_bottom.y)
-        .lineTo(this._sphere_b.x + line_b_bottom.x, screen_height - this._sphere_b.y + line_b_bottom.y).endFill();
+        // graphics.lineStyle(1, 0xffffff)
+        // .moveTo( this._sphere_a.x + line_a_bottom.x, screen_height - this._sphere_a.y + line_a_bottom.y)
+        // .lineTo(this._sphere_b.x + line_b_bottom.x, screen_height - this._sphere_b.y + line_b_bottom.y).endFill();
     }
 
     parse_collision_struct(collision_data: ColliderStruct): void {

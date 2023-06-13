@@ -12,6 +12,7 @@ export const InputEventTitle = Object.freeze({
 
     z: "z",
     l_slash: "/",
+    space: " ",
 });
 
 export let ActionMapTable :  {[key: string]: ActionEnum} = Object.create({

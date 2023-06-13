@@ -5,6 +5,7 @@ import { ButtonStatus } from "../../utility/Input/InputHandler";
 import { PinballPhysics } from "./pinball_physics";
 import { PinballLayer } from "../utility/pinball_static";
 import { Clamp } from "../../utility/UtilityMethod";
+import { PhysicsInterface } from "../collider_component/PhysicsInterface";
 
 export class SimulationState {
  
@@ -28,6 +29,7 @@ export class SimulationState {
         const value = (input.state.status == ButtonStatus.Begin) ? 1 : 0;
 
         if (input.state.keycode in ActionMapTable) {
+            //console.log(input.state.keycode, value);
             this._input_state_table.setValue(input.state.keycode, value);
         }
     }
@@ -36,20 +38,15 @@ export class SimulationState {
         //Handle Flipper
         this.handle_flipper(PinballLayer.Flipper_Left, InputEventTitle.z, delta_time);
         this.handle_flipper(PinballLayer.Flipper_Right, InputEventTitle.l_slash, delta_time);
+
+        this.handle_shooter(delta_time);
     }
 
     private handle_flipper(tag: number, state_id: string, delta_time: number) {
-        let tags = this._pinball_physics.physics_tags.getValue(tag);
-        let state = this._input_state_table.getValue(state_id);
-
-        if (tags === undefined || state === undefined) return;
-        let tagLens = tags.length;
         const flipper_strength = 15;
-        const flipper_normalize = (state * 2) - 1; // Normalize to -1 and 1
-        for (let i = tagLens - 1; i >= 0; i--) {
-            let physicsComp = this._pinball_physics.physics_components.getValue(tags[i]);
-            
-            if (physicsComp === undefined) continue;
+
+        this.process_element_opt(tag, state_id, (physicsComp, state) => {
+            const flipper_normalize = (state * 2) - 1; // Normalize to -1 and 1
 
             let previous_rotation = physicsComp.Transform.rotation;
             let angular = flipper_normalize * flipper_strength;
@@ -59,6 +56,37 @@ export class SimulationState {
             
                 physicsComp.Transform.rotation = rotation;
                 physicsComp.Transform.angular = (rotation - previous_rotation) / delta_time;
+        });
+    }
+
+    private handle_shooter(delta_time: number) {
+        this.process_element_opt(PinballLayer.Shooter, InputEventTitle.space, (physicsComp, state) => {
+            let down_velocity = -20;
+            let up_velocity = 800;
+            let velocity = ((state) ? down_velocity : up_velocity) * delta_time; 
+
+            let position_y = physicsComp.Transform.position.y + velocity;
+                position_y = Clamp(position_y, physicsComp.Constraint.rest_y + physicsComp.Constraint.min_y , physicsComp.Constraint.rest_y + physicsComp.Constraint.max_y);
+            let position_x = physicsComp.Transform.position.x;
+
+            physicsComp.Transform.velocity.set(0, velocity);
+            physicsComp.Transform.position.set(position_x, position_y);
+        });
+    }
+
+    private process_element_opt(tag: number, state_id: string, callback: (element: PhysicsInterface, input_state: number) => void) {
+        let state = this._input_state_table.getValue(state_id);
+        let tags = this._pinball_physics.physics_tags.getValue(tag);
+
+        if (tags === undefined || state === undefined) return;
+        let tagLens = tags.length;
+
+        for (let i = tagLens - 1; i >= 0; i--) {
+            let physicsComp = this._pinball_physics.physics_components.getValue(tags[i]);
+            
+            if (physicsComp === undefined) continue;
+
+            callback(physicsComp, state);
         }
     }
 }
