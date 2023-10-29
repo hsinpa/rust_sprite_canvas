@@ -103,7 +103,6 @@ export default class LineComponent extends PhysicsInterface {
         //velocity.scale(physicsObject.velocity.length() * GameConfig.Restitution);
 
         Vector2.reflect(velocity, this._player_velocity, velocity);
-        console.log(velocity, this._player_velocity);
 
         return this._collisionResult;
     }
