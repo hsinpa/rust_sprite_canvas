@@ -3,7 +3,8 @@ import Subworker from "./subworker";
 
 export const ExecWorkerSetup = function() {
     let worker = new Worker(
-        new URL('./worker.ts', import.meta.url), {type: 'module', name:"classic_worker"}
+        new URL('./worker.ts', import.meta.url),
+                {type: 'module', name:"classic_worker"}
     );
 
     worker.onmessage = (x: MessageEvent<any>) => {
@@ -23,7 +24,8 @@ interface DataInterface {
 
 export const ExecBufferWorkerSetup = function() {
     let worker = new Worker(
-        new URL('./worker_buffer.ts', import.meta.url), {type: 'module', name:"classic_worker"}
+        new URL('./worker_buffer.ts', import.meta.url), 
+        {type: 'module', name:"classic_worker"}
     );
 
     let count = 20;
@@ -40,7 +42,13 @@ export const ExecBufferWorkerSetup = function() {
         console.log(x.data)
     }
 
-    worker.postMessage(data_struct, [data_struct.int_array.buffer, data_struct.float_array.buffer]);
+    //Transferable[] Sequence don't matter
+    worker.postMessage(data_struct, 
+        [   data_struct.float_array.buffer, 
+            data_struct.int_array.buffer
+        ]);
+
+    //worker.postMessage(data_struct, [data_struct.int_array.buffer, data_struct.float_array.buffer]);
 }
 
 export const ExecShareBufferWorkerSetup = function() {
@@ -49,21 +57,25 @@ export const ExecShareBufferWorkerSetup = function() {
     );
 
     let count = 20;
-    let shareArrayBuffer : SharedArrayBuffer = new SharedArrayBuffer(count * Float32Array.BYTES_PER_ELEMENT); //4 bytes
+    let shareArrayBuffer = new SharedArrayBuffer(count * Float32Array.BYTES_PER_ELEMENT); //4 bytes
     let float_array = new Float32Array(shareArrayBuffer);
     let manual_lock = false;
 
+    //Unlock when result is return
     worker.onmessage = (x: MessageEvent<any>) => {
         manual_lock = false;
     }
     
+    //Run per frame
     function next_frame_step() {
+        //IF IS save to access data
         if (!manual_lock) {
             for (let i = 0; i < count; i++) {
                 //DO SOMETHING here
                 let single_f = float_array[i];
             }
             
+            //Lock data and send to worker
             manual_lock = true;
             worker.postMessage({id : "NEXT_JOB"});
         }
